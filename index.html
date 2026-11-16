@@ -1,165 +1,1344 @@
+
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
+<html lang="en">
+<head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tea Factory Accounts</title>
+
 <style>
-:root{--bg:#f4f7f2;--card:#fff;--tx:#1d2a1d;--mu:#667466;--ac:#2f6b3a;--bd:#d8e2d5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a13;--card:#1b261c;--tx:#e6eee4;--mu:#9aab98;--ac:#6fbf7c;--bd:#2c3b2d}}
-:root[data-theme="dark"]{--bg:#121a13;--card:#1b261c;--tx:#e6eee4;--mu:#9aab98;--ac:#6fbf7c;--bd:#2c3b2d}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-header{padding:14px 16px;font-size:20px;font-weight:600;color:var(--ac)}
-nav{display:flex;gap:6px;overflow-x:auto;padding:0 12px 10px}
-nav button{white-space:nowrap;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:7px 12px;border-radius:18px;cursor:pointer}
-nav button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
-main{padding:0 12px 30px;max-width:1000px;margin:auto}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
-h3{margin:0 0 10px;font-size:16px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.stat{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}
-.stat b{display:block;font-size:22px;color:var(--ac)}.stat span{color:var(--mu);font-size:12px}
-form{display:flex;flex-wrap:wrap;gap:8px;align-items:end}
-label{display:flex;flex-direction:column;font-size:12px;color:var(--mu);gap:3px}
-input,select,textarea{padding:7px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit;min-width:110px}
-button.p{background:var(--ac);color:#fff;border:0;padding:9px 14px;border-radius:8px;cursor:pointer}
-button.x{background:none;border:0;color:#b33;cursor:pointer;font-size:16px}.del{background:#c0392b;color:#fff;border:0;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px}.del:hover{background:#a5301f}.sm{padding:6px 12px!important}
-.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;margin-top:10px}
-th,td{padding:6px 8px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}th{color:var(--mu);font-size:12px}
-.mu{color:var(--mu);font-size:13px}textarea{width:100%;min-height:90px}
-</style><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
-<header>🍃 Tea Factory Accounts</header><nav id="nav"></nav><main id="app"></main>
+:root {
+  --bg:#f4f7f2;
+  --card:#fff;
+  --tx:#1d2a1d;
+  --mu:#667466;
+  --ac:#2f6b3a;
+  --bd:#d8e2d5;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+
+@media(prefers-color-scheme:dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#121a13;
+    --card:#1b261c;
+    --tx:#e6eee4;
+    --mu:#9aab98;
+    --ac:#6fbf7c;
+    --bd:#2c3b2d;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg:#121a13;
+  --card:#1b261c;
+  --tx:#e6eee4;
+  --mu:#9aab98;
+  --ac:#6fbf7c;
+  --bd:#2c3b2d;
+}
+
+html { scroll-padding-top:env(safe-area-inset-top,0px); }
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--tx);
+  font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+
+header {
+  padding:14px 16px;
+  font-size:20px;
+  font-weight:600;
+  color:var(--ac);
+}
+
+nav {
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  padding:0 12px 10px;
+}
+
+nav button {
+  white-space:nowrap;
+  border:1px solid var(--bd);
+  background:var(--card);
+  color:var(--tx);
+  padding:7px 12px;
+  border-radius:18px;
+  cursor:pointer;
+}
+
+nav button.on {
+  background:var(--ac);
+  color:#fff;
+  border-color:var(--ac);
+}
+
+main {
+  padding:0 12px 30px;
+  max-width:1000px;
+  margin:auto;
+}
+
+.card {
+  background:var(--card);
+  border:1px solid var(--bd);
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:12px;
+}
+
+h3 { margin:0 0 10px; font-size:16px; }
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:10px;
+}
+
+.stat {
+  background:var(--card);
+  border:1px solid var(--bd);
+  border-radius:12px;
+  padding:12px;
+}
+
+.stat b {
+  display:block;
+  font-size:22px;
+  color:var(--ac);
+}
+
+.stat span { color:var(--mu); font-size:12px; }
+
+form {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:end;
+}
+
+label {
+  display:flex;
+  flex-direction:column;
+  font-size:12px;
+  color:var(--mu);
+  gap:3px;
+}
+
+input,select,textarea {
+  padding:7px;
+  border:1px solid var(--bd);
+  border-radius:8px;
+  background:var(--bg);
+  color:var(--tx);
+  font:inherit;
+  min-width:110px;
+}
+
+button.p {
+  background:var(--ac);
+  color:#fff;
+  border:0;
+  padding:9px 14px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+button.x {
+  background:none;
+  border:0;
+  color:#b33;
+  cursor:pointer;
+  font-size:16px;
+}
+
+.del {
+  background:#c0392b;
+  color:#fff;
+  border:0;
+  padding:6px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.del:hover { background:#a5301f; }
+.sm { padding:6px 12px!important; }
+.tw { overflow-x:auto; }
+
+table {
+  border-collapse:collapse;
+  width:100%;
+  margin-top:10px;
+}
+
+th,td {
+  padding:6px 8px;
+  border-bottom:1px solid var(--bd);
+  text-align:left;
+  white-space:nowrap;
+}
+
+th { color:var(--mu); font-size:12px; }
+.mu { color:var(--mu); font-size:13px; }
+
+textarea {
+  width:100%;
+  min-height:90px;
+}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+
+<body>
+
+<header>🍃 Tea Factory Accounts</header>
+<nav id="nav"></nav>
+<main id="app"></main>
+
 <script>
 const T=()=>new Date().toISOString().slice(0,10);
 const KEY='teaFactoryData1';
 const SD=()=>D.selDate||T();
 const dm=d=>d&&d.length>=10?d.slice(8,10)+d.slice(5,7)+d.slice(2,4):(d||'');
-let D={suppliers:['Supplier 1'],price:{},fsup:['Firewood supplier 1'],fprice:{},workers:[],sp:[],leaf:[],fire:[],work:[],pay:[],bags:[],disp:[],waste:[],eb:[],svc:[],tools:[],notes:[],rem:[],oldStock:0};
-try{const s=localStorage.getItem(KEY);if(s)D=Object.assign(D,JSON.parse(s))}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}clearTimeout(window._t);window._t=setTimeout(()=>{if(typeof writeXls==='function')writeXls();if(typeof gSave==='function')gSave()},150)};
-const n=v=>parseFloat(v)||0, f=(v,d=2)=>(Math.round(v*10**d)/10**d).toLocaleString('en-IN',{maximumFractionDigits:d});
-const hrs=r=>{if(!r.start||!r.end)return 0;let a=r.start.split(':'),b=r.end.split(':'),h=(b[0]*60+ +b[1]-a[0]*60- +a[1])/60;return h<0?h+24:h};
+
+let D={
+  suppliers:['Supplier 1'],
+  price:{},
+  fsup:['Firewood supplier 1'],
+  fprice:{},
+  workers:[],
+  sp:[],
+  leaf:[],
+  fire:[],
+  work:[],
+  pay:[],
+  bags:[],
+  disp:[],
+  waste:[],
+  eb:[],
+  svc:[],
+  tools:[],
+  notes:[],
+  rem:[],
+  oldStock:0
+};
+
+try {
+  const s=localStorage.getItem(KEY);
+  if(s) D=Object.assign(D,JSON.parse(s));
+} catch(e) {}
+
+const save=()=>{
+  try {
+    localStorage.setItem(KEY,JSON.stringify(D));
+  } catch(e) {}
+
+  clearTimeout(window._t);
+
+  window._t=setTimeout(()=>{
+    if(typeof writeXls==='function') writeXls();
+    if(typeof gSave==='function') gSave();
+  },150);
+};
+
+const n=v=>parseFloat(v)||0;
+const f=(v,d=2)=>(Math.round(v*10**d)/10**d).toLocaleString('en-IN',{maximumFractionDigits:d});
+
+const hrs=r=>{
+  if(!r.start||!r.end) return 0;
+  let a=r.start.split(':');
+  let b=r.end.split(':');
+  let h=(b[0]*60+ +b[1]-a[0]*60- +a[1])/60;
+  return h<0?h+24:h;
+};
+
 const BAGS=['HD Premium','Harihara Tea'];
 const sum=(a,fn)=>a.reduce((s,r)=>s+fn(r),0);
+
 const sec={
-leaf:{t:'Green leaf',k:'leaf',F:[['d','Date','date'],['sup','Supplier','sel'],['kg','Weight (kg)','number']],C:[['Amount ₹',r=>f(n(r.kg)*n((D.price||{})[r.sup]))]]},
-fire:{t:'Firewood',k:'fire',F:[['d','Date','date'],['sup','Supplier','fsel'],['loaded','Loaded (kg)','number'],['empty','Empty (kg)','number']],C:[['Net kg',r=>f(n(r.loaded)-n(r.empty))],['Amount ₹',r=>f(fAmt(r))]]},
-work:{t:'Worker hours',k:'work',F:[['d','Date','date'],['name','Worker','wsel'],['start','Start','time'],['end','End','time']],C:[['Hours',r=>f(hrs(r))]]},
-pay:{t:'Staff payments',k:'pay',F:[['d','Date','date'],['name','Worker','wsel'],['amt','Amount ₹','number'],['note','Note','text']],C:[]},
-bags:{t:'Bag stock movements',k:'bags',F:[['d','Date','date'],['type','Bag','bag'],['rec','Received','number'],['used','Used','number']],C:[]},
-disp:{t:'Weekly dispatch',k:'disp',F:[['d','Date','date'],['mark','Bag mark','bag'],['kg','Dispatch (kg)','number']],C:[]},
-waste:{t:'Tea waste generated',k:'waste',F:[['d','Date','date'],['kg','Waste (kg)','number']],C:[]},
-eb:{t:'EB readings',k:'eb',F:[['d','Date','date'],['open','Opening unit','number'],['close','Closing unit','number'],['amt','Amount ₹','number']],C:[['Used',r=>f(n(r.close)-n(r.open))],['Next opening',r=>r.close]]},
-svc:{t:'Machine service',k:'svc',F:[['d','Date','date'],['desc','Machine / work','text'],['cost','Cost ₹','number']],C:[]},
-tools:{t:'M/C Tool',k:'tools',F:[['d','Date','date'],['name','Tool name','text'],['qty','Qty','number'],['price','Price ₹','number']],C:[['Total ₹',r=>f(n(r.qty)*n(r.price))]]},
-notes:{t:'Daily work update',k:'notes',F:[['d','Date','date'],['start','Company start','time'],['end','Company end','time'],['leaf','Green leaf used (kg)','number'],['rc','RC stock (kg)','number'],['bd','Breakdown','text']],C:[]}
+  leaf:{
+    t:'Green leaf',k:'leaf',
+    F:[['d','Date','date'],['sup','Supplier','sel'],['kg','Weight (kg)','number']],
+    C:[['Amount ₹',r=>f(n(r.kg)*n((D.price||{})[r.sup]))]]
+  },
+  fire:{
+    t:'Firewood',k:'fire',
+    F:[['d','Date','date'],['sup','Supplier','fsel'],['loaded','Loaded (kg)','number'],['empty','Empty (kg)','number']],
+    C:[['Net kg',r=>f(n(r.loaded)-n(r.empty))],['Amount ₹',r=>f(fAmt(r))]]
+  },
+  work:{
+    t:'Worker hours',k:'work',
+    F:[['d','Date','date'],['name','Worker','wsel'],['start','Start','time'],['end','End','time']],
+    C:[['Hours',r=>f(hrs(r))]]
+  },
+  pay:{
+    t:'Staff payments',k:'pay',
+    F:[['d','Date','date'],['name','Worker','wsel'],['amt','Amount ₹','number'],['note','Note','text']],
+    C:[]
+  },
+  bags:{
+    t:'Bag stock movements',k:'bags',
+    F:[['d','Date','date'],['type','Bag','bag'],['rec','Received','number'],['used','Used','number']],
+    C:[]
+  },
+  disp:{
+    t:'Weekly dispatch',k:'disp',
+    F:[['d','Date','date'],['mark','Bag mark','bag'],['kg','Dispatch (kg)','number']],
+    C:[]
+  },
+  waste:{
+    t:'Tea waste generated',k:'waste',
+    F:[['d','Date','date'],['kg','Waste (kg)','number']],
+    C:[]
+  },
+  eb:{
+    t:'EB readings',k:'eb',
+    F:[['d','Date','date'],['open','Opening unit','number'],['close','Closing unit','number'],['amt','Amount ₹','number']],
+    C:[['Used',r=>f(n(r.close)-n(r.open))],['Next opening',r=>r.close]]
+  },
+  svc:{
+    t:'Machine service',k:'svc',
+    F:[['d','Date','date'],['desc','Machine / work','text'],['cost','Cost ₹','number']],
+    C:[]
+  },
+  tools:{
+    t:'M/C Tool',k:'tools',
+    F:[['d','Date','date'],['name','Tool name','text'],['qty','Qty','number'],['price','Price ₹','number']],
+    C:[['Total ₹',r=>f(n(r.qty)*n(r.price))]]
+  },
+  notes:{
+    t:'Daily work update',k:'notes',
+    F:[['d','Date','date'],['start','Company start','time'],['end','Company end','time'],['leaf','Green leaf used (kg)','number'],['rc','RC stock (kg)','number'],['bd','Breakdown','text']],
+    C:[]
+  }
 };
-function wkStart(d){const x=new Date(d+'T00:00');x.setDate(x.getDate()-((x.getDay()+1)%7));return x.toISOString().slice(0,10)}
-function form(s,extra=''){
- const inp=([k,l,t])=>{const id='f_'+s.k+'_'+k;
-  if(t==='sel')return `<label>${l}<select id="${id}">${D.suppliers.map(x=>`<option>${x}</option>`).join('')}</select></label>`;
-  if(t==='fsel'||t==='wsel')return `<label>${l}<select id="${id}">${D[t==='fsel'?'fsup':'workers'].map(x=>`<option>${x}</option>`).join('')}</select></label>`;
-  if(t==='bag')return `<label>${l}<select id="${id}">${BAGS.map(x=>`<option>${x}</option>`).join('')}</select></label>`;
-  let v=t==='date'?SD():(s.k==='eb'&&k==='open'?(D.eb.length?D.eb[D.eb.length-1].close:19167.83):'');
-  return `<label>${l}<input id="${id}" type="${t}" ${t==='number'?'step="any"':''} value="${v}"></label>`};
- return `<form onsubmit="add(event,'${s.k}')">${s.F.map(inp).join('')}<button class="p">Add</button>${extra}</form>`}
-function add(e,k){e.preventDefault();const s=sec[k],r={};s.F.forEach(([f])=>r[f]=document.getElementById('f_'+k+'_'+f).value);D[k].push(r);save();go(cur)}
-function del(k,i){D[k].splice(i,1);save();go(cur)}
-function table(s,rows){rows=rows||D[s.k];
- const idx=D[s.k];
- return `<div class="tw"><table><tr>${s.F.map(x=>`<th>${x[1]}</th>`).join('')}${s.C.map(c=>`<th>${c[0]}</th>`).join('')}<th></th></tr>`+
- rows.slice().reverse().map(r=>{const i=idx.indexOf(r);return `<tr>${s.F.map(x=>`<td>${x[2]==='date'?dm(r[x[0]]):(r[x[0]]??'')}</td>`).join('')}${s.C.map(c=>`<td>${c[1](r)}</td>`).join('')}<td><button class="del" onclick="del('${s.k}',${i})">Delete</button></td></tr>`}).join('')+`</table></div>`}
-function block(k,extra,pre){const s=sec[k];return `<div class="card"><h3>${s.t}</h3>${pre||''}${form(s,extra)}${table(s)}</div>`}
+
+function wkStart(d) {
+  const x=new Date(d+'T00:00');
+  x.setDate(x.getDate()-((x.getDay()+1)%7));
+  return x.toISOString().slice(0,10);
+}
+
+function form(s,extra='') {
+  const inp=([k,l,t])=>{
+    const id='f_'+s.k+'_'+k;
+
+    if(t==='sel')
+      return `<label>${l}<select id="${id}">${D.suppliers.map(x=>`<option>${x}</option>`).join('')}</select></label>`;
+
+    if(t==='fsel'||t==='wsel')
+      return `<label>${l}<select id="${id}">${D[t==='fsel'?'fsup':'workers'].map(x=>`<option>${x}</option>`).join('')}</select></label>`;
+
+    if(t==='bag')
+      return `<label>${l}<select id="${id}">${BAGS.map(x=>`<option>${x}</option>`).join('')}</select></label>`;
+
+    let v=t==='date'?SD():(s.k==='eb'&&k==='open'?(D.eb.length?D.eb[D.eb.length-1].close:19167.83):'');
+
+    return `<label>${l}<input id="${id}" type="${t}" ${t==='number'?'step="any"':''} value="${v}"></label>`;
+  };
+
+  return `<form onsubmit="add(event,'${s.k}')">${s.F.map(inp).join('')}<button class="p">Add</button>${extra}</form>`;
+}
+
+function add(e,k) {
+  e.preventDefault();
+  const s=sec[k],r={};
+  s.F.forEach(([f])=>r[f]=document.getElementById('f_'+k+'_'+f).value);
+  D[k].push(r);
+  save();
+  go(cur);
+}
+
+function del(k,i) {
+  D[k].splice(i,1);
+  save();
+  go(cur);
+}
+
+function table(s,rows) {
+  rows=rows||D[s.k];
+  const idx=D[s.k];
+
+  return `<div class="tw"><table><tr>${s.F.map(x=>`<th>${x[1]}</th>`).join('')}${s.C.map(c=>`<th>${c[0]}</th>`).join('')}<th></th></tr>`+
+  rows.slice().reverse().map(r=>{
+    const i=idx.indexOf(r);
+    return `<tr>${s.F.map(x=>`<td>${x[2]==='date'?dm(r[x[0]]):(r[x[0]]??'')}</td>`).join('')}${s.C.map(c=>`<td>${c[1](r)}</td>`).join('')}<td><button class="del" onclick="del('${s.k}',${i})">Delete</button></td></tr>`;
+  }).join('')+
+  `</table></div>`;
+}
+
+function block(k,extra,pre) {
+  const s=sec[k];
+  return `<div class="card"><h3>${s.t}</h3>${pre||''}${form(s,extra)}${table(s)}</div>`;
+}
+
 const stat=(l,v)=>`<div class="stat"><b>${v}</b><span>${l}</span></div>`;
-function leafDay(d){return sum(D.leaf.filter(r=>r.d===d),r=>n(r.kg))}
-function madeTeaAll(){return sum(D.leaf,r=>n(r.kg))/4}
-function teaStock(){return n(D.oldStock)+madeTeaAll()-sum(D.disp,r=>n(r.kg))}
-function bagStock(t){return sum(D.bags.filter(r=>r.type===t),r=>n(r.rec)-n(r.used))}
-const pages={
-Home(){const l=leafDay(SD());
- return `<div class="card"><h3>Working date</h3><label>Date<input type="date" value="${SD()}" onchange="D.selDate=this.value;save();go('Home')"></label><p class="mu">Selected: <b>${dm(SD())}</b> (DDMMYY). This date is used in every tab until you change it here.</p></div>${supCard()}<div class="grid">${stat("Selected day's green leaf (kg)",f(l))}${stat('Made tea 4:1 (kg)',f(l/4))}${stat('Firewood needed (kg)',f(l/4))}${stat('Workers today',new Set(D.work.filter(r=>r.d===SD()).map(r=>r.name)).size)}${stat('Available tea stock (kg)',f(teaStock()))}${BAGS.map(b=>stat(b+' bags',f(bagStock(b),0))).join('')}</div>
-<div class="card"><h3>Google Drive (hariharateafactory@gmail.com)</h3><p class="mu">Connect once. The app will try to reconnect silently on future visits. Google may occasionally ask you to connect again. Every change is saved to <b>TeaFactory.xlsx</b> in your Drive. <span id="gs">${GS}</span></p><p><button class="p" onclick="gConnect()">Connect Google Drive</button></p></div>
- <div class="card"><h3>Excel file (V:\HHTF)</h3><p class="mu">Press <b>Choose folder</b> once and select <b>V:\HHTF</b>. After that every change is saved automatically to <b>TeaFactory.xlsx</b> in that folder (Chrome or Edge on a computer). <span id="xs">${XS}</span></p><p><button class="p" onclick="pickDir()">Choose folder</button> <button class="p" onclick="saveNow()">Save now</button> <button class="p" onclick="loadDir(true)">Load from folder</button> <button class="p" onclick="XLSX.writeFile(wbBuild(),'TeaFactory.xlsx')">Download Excel</button> <label style="display:inline-flex">Load from Excel<input type="file" accept=".xlsx" onchange="importXls(this.files[0])"></label></p></div>`},
-'Green leaf'(){return block('leaf',`<button type="button" class="p" onclick="newSup()">+ Supplier</button>`)+`${supTable()}${dailyTable()}`},
-Firewood(){return block('fire',`<button type="button" class="p" onclick="lAdd('fsup','New firewood supplier name')">+ Supplier</button>`)+fsupTable()+fdaily()},
-Workers(){
- const wk={};D.work.forEach(r=>{const w=wkStart(r.d);(wk[w]=wk[w]||{});wk[w][r.name]=(wk[w][r.name]||0)+hrs(r)});
- const rows=Object.keys(wk).sort().reverse().map(w=>Object.entries(wk[w]).map(([nm,h])=>`<tr><td>${dm(w)}</td><td>${nm}</td><td>${f(h)}</td></tr>`).join('')).join('');
- return wkTable()+block('work',`<button type="button" class="p" onclick="lAdd('workers','New worker name')">+ Worker</button>`)+`<div class="card"><h3>Weekly hours (Sat–Fri)</h3><div class="tw"><table><tr><th>Week starting</th><th>Worker</th><th>Total hours</th></tr>${rows}</table></div></div>`+block('pay')+`<div class="card">Total paid: <b>₹${f(sum(D.pay,r=>n(r.amt)))}</b></div>`},
-Bags(){return block('bags')+`<div class="grid">${BAGS.map(b=>stat(b+' in stock',f(bagStock(b),0))).join('')}</div>`},
-'Tea stock'(){return `<div class="card"><h3>Old stock</h3><label>Old stock (kg)<input type="number" step="any" value="${D.oldStock}" onchange="D.oldStock=this.value;save();go('Tea stock')"></label>
- <p class="mu">Made tea so far: ${f(madeTeaAll())} kg · Available: <b>${f(teaStock())} kg</b></p></div>`+block('disp')+`<div class="card"><h3>Dispatch by bag mark</h3>${BAGS.map(b=>`<div>${b}: <b>${f(sum(D.disp.filter(r=>r.mark===b),r=>n(r.kg)))} kg</b></div>`).join('')}</div>`},
-'Tea waste'(){const m=T().slice(0,7),prior=sum(D.waste.filter(r=>r.d.slice(0,7)<m),r=>n(r.kg)),cur=sum(D.waste.filter(r=>r.d.slice(0,7)===m),r=>n(r.kg)),op=1909+prior;
- return `<div class="grid">${stat('Opening (kg)',f(op))}${stat('Generated this month (kg)',f(cur))}${stat('Next month opening (kg)',f(op+cur))}</div><div style="height:12px"></div>`+block('waste')},
-EB(){const l=D.eb[D.eb.length-1];return (l?`<div class="grid">${stat('Total used (units)',f(n(l.close)-n(l.open)))}${stat('Bill amount ₹',f(ebAmt(l)))}${stat('Next opening',l.close)}</div><div style="height:12px"></div>`:'')+block('eb')},
-Service(){return block('svc')+`<div class="card">Total: <b>₹${f(sum(D.svc,r=>n(r.cost)))}</b></div>`},
-'M/C Tool'(){return block('tools')+`<div class="card">Total: <b>₹${f(sum(D.tools,r=>n(r.qty)*n(r.price)))}</b></div>`},
-Note(){return block('notes')},
-Report(){const I=(a,b)=>r=>r.d>=a&&r.d<=b;
- return rbox('leaf','Green leaf',(a,b)=>{const L=D.leaf.filter(I(a,b));return stat('Total (kg)',f(sum(L,r=>n(r.kg))))+stat('Made tea 4:1 (kg)',f(sum(L,r=>n(r.kg))/4))})
- +rbox('fire','Firewood',(a,b)=>{const F=D.fire.filter(I(a,b));return stat('Net (kg)',f(sum(F,r=>n(r.loaded)-n(r.empty))))+stat('Amount ₹',f(sum(F,fAmt)))})
- +rbox('rc','RC',(a,b)=>stat('RC (kg)',f(sum(D.notes.filter(I(a,b)),r=>n(r.rc)))))
- +rbox('eb','EB',(a,b)=>{const E=D.eb.filter(I(a,b));return stat('Units used',f(sum(E,r=>n(r.close)-n(r.open))))+stat('Bill ₹',f(sum(E,ebAmt)))})
- +rbox('lab','Labour',(a,b)=>stat('Hours',f(sum(D.work.filter(I(a,b)),hrs)))+stat('Paid ₹',f(sum(D.pay.filter(I(a,b)),r=>n(r.amt)))))}
+
+function leafDay(d) {
+  return sum(D.leaf.filter(r=>r.d===d),r=>n(r.kg));
+}
+
+function madeTeaAll() {
+  return sum(D.leaf,r=>n(r.kg))/4;
+}
+
+function teaStock() {
+  return n(D.oldStock)+madeTeaAll()-sum(D.disp,r=>n(r.kg));
+}
+
+function bagStock(t) {
+  return sum(D.bags.filter(r=>r.type===t),r=>n(r.rec)-n(r.used));
+}
+
+function ebAmt(r) {
+  return r.amt!==undefined&&r.amt!==''?n(r.amt):(n(r.close)-n(r.open))*n(r.rate);
+}
+
+function fAmt(r) {
+  return (n(r.loaded)-n(r.empty))*n(D.fprice[r.sup]||r.price);
+}
+
+const SH={
+  leaf:'Green leaf',
+  fire:'Firewood',
+  work:'Workers',
+  pay:'Payments',
+  bags:'Bags',
+  disp:'Dispatch',
+  waste:'Tea waste',
+  eb:'EB',
+  svc:'Service',
+  tools:'MC Tool',
+  notes:'Note',
+  sp:'Supplier paid'
 };
-const SH={leaf:'Green leaf',fire:'Firewood',work:'Workers',pay:'Payments',bags:'Bags',disp:'Dispatch',waste:'Tea waste',eb:'EB',svc:'Service',tools:'MC Tool',notes:'Note',sp:'Supplier paid'};
-sec.sp={t:'Payments to suppliers',k:'sp',F:[['d','Date','date'],['sup','Supplier','sel'],['amt','Paid ₹','number']],C:[]};
+
+sec.sp={
+  t:'Payments to suppliers',k:'sp',
+  F:[['d','Date','date'],['sup','Supplier','sel'],['amt','Paid ₹','number']],
+  C:[]
+};
+
 const COL=['#2f6b3a','#e0a030','#3b7dd8','#c0504d','#8e5bb5','#2aa198','#d2691e','#7f8c8d'];
+
 let dir=null;
-let XS='';const xst=m=>{XS=m;const e=document.getElementById('xs');if(e)e.textContent=m};
-function wbBuild(){const wb=XLSX.utils.book_new();
- for(const k in SH){const rows=D[k].map(r=>{const o={};sec[k].F.forEach(([f,l])=>o[l]=r[f]??'');sec[k].C.forEach(([l,fn])=>o[l]=fn(r));return o});
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows.length?rows:[{}]),SH[k])}
- XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet([{key:'suppliers',value:JSON.stringify(D.suppliers)},{key:'oldStock',value:D.oldStock},{key:'rem',value:JSON.stringify(D.rem)},{key:'price',value:JSON.stringify(D.price)},{key:'fsup',value:JSON.stringify(D.fsup)},{key:'fprice',value:JSON.stringify(D.fprice)},{key:'workers',value:JSON.stringify(D.workers)},{key:'selDate',value:D.selDate||''}]),'Settings');
- XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(D.suppliers.map(s=>{const kg=sum(D.leaf.filter(r=>r.sup===s),r=>n(r.kg)),a=kg*n(D.price[s]),p=sum(D.sp.filter(r=>r.sup===s),r=>n(r.amt));return{Supplier:s,'Price/kg':n(D.price[s]),'Total kg':kg,'Total amount':a,'Paid':p,'Balance':a-p}})),'Suppliers');return wb}
-function importXls(file,q){if(!file)return;const r=new FileReader();r.onload=()=>{try{const wb=XLSX.read(r.result,{type:'array'});
- for(const k in SH){const ws=wb.Sheets[SH[k]];if(!ws)continue;D[k]=XLSX.utils.sheet_to_json(ws,{defval:''}).filter(o=>Object.keys(o).length).map(o=>{const x={};sec[k].F.forEach(([f,l])=>x[f]=String(o[l]??''));return x})}
- const st=wb.Sheets.Settings;if(st)XLSX.utils.sheet_to_json(st).forEach(o=>{try{if(o.key==='suppliers')D.suppliers=JSON.parse(o.value);if(o.key==='oldStock')D.oldStock=o.value;if(o.key==='rem')D.rem=JSON.parse(o.value);if(o.key==='price')D.price=JSON.parse(o.value);if(o.key==='fsup')D.fsup=JSON.parse(o.value);if(o.key==='fprice')D.fprice=JSON.parse(o.value);if(o.key==='workers')D.workers=JSON.parse(o.value);if(o.key==='selDate'&&o.value)D.selDate=o.value}catch(e){}});
- save();go(cur);if(!q)alert('Loaded from Excel')}catch(e){alert('Could not read this Excel file')}};r.readAsArrayBuffer(file)}
-function idb(op,v){return new Promise(res=>{try{const q=indexedDB.open('tf',1);q.onupgradeneeded=()=>q.result.createObjectStore('h');q.onsuccess=()=>{const s=q.result.transaction('h',op==='get'?'readonly':'readwrite').objectStore('h');const r=op==='get'?s.get('dir'):s.put(v,'dir');r.onsuccess=()=>res(r.result);r.onerror=()=>res(null)};q.onerror=()=>res(null)}catch(e){res(null)}})}
-async function writeXls(ask){if(!dir||!window.XLSX)return false;try{const o={mode:'readwrite'};if(await dir.queryPermission(o)!=='granted'){if(!ask){xst('Press Save now to allow saving again.');return false}if(await dir.requestPermission(o)!=='granted')return false}
- const fh=await dir.getFileHandle('TeaFactory.xlsx',{create:true}),w=await fh.createWritable();await w.write(XLSX.write(wbBuild(),{bookType:'xlsx',type:'array'}));await w.close();xst('Saved to folder at '+new Date().toLocaleTimeString());return true}catch(e){xst('Could not save to folder.');return false}}
-async function pickDir(){try{dir=await showDirectoryPicker({mode:'readwrite'});await idb('put',dir);let ex=false;try{await dir.getFileHandle('TeaFactory.xlsx');ex=true}catch(e){}if(ex&&confirm('TeaFactory.xlsx already exists in this folder. OK = load its data. Cancel = replace it with the data on this device.'))await loadDir(true);else await writeXls(true)}catch(e){alert('Folder saving is not available here (use Chrome or Edge on a computer, with the downloaded file). Use Download Excel instead.')}}
-function saveNow(){if(!dir)return alert('Choose the folder first');writeXls(true)}
-idb('get').then(h=>{if(h){dir=h;loadDir(false)}});
-const ebAmt=r=>r.amt!==undefined&&r.amt!==''?n(r.amt):(n(r.close)-n(r.open))*n(r.rate);
-const fAmt=r=>(n(r.loaded)-n(r.empty))*n(D.fprice[r.sup]||r.price);
-let RR={};const rg=k=>RR[k]||[SD().slice(0,8)+'01',SD()];
-function rdate(k,i,v){RR[k]=rg(k).slice();RR[k][i]=v;go('Report')}
-function rbox(k,t,body){const [a,b]=rg(k);return `<div class="card"><h3>${t}</h3><div style="display:flex;flex-wrap:nowrap;gap:8px"><label style="flex:1;min-width:0">Start date<input type="date" style="min-width:0;width:100%" value="${a}" onchange="rdate('${k}',0,this.value)"></label><label style="flex:1;min-width:0">End date<input type="date" style="min-width:0;width:100%" value="${b}" onchange="rdate('${k}',1,this.value)"></label></div><div class="grid" style="margin-top:10px">${body(a,b)}</div></div>`}
-function lAdd(L,m){const x=prompt(m);if(x&&x.trim()&&!D[L].includes(x.trim())){D[L].push(x.trim());save();go(cur)}}
-function lRen(L,i,recs,fld,pr){const o=D[L][i],x=prompt('Rename',o);if(!x||!x.trim()||x.trim()===o)return;const nn=x.trim();if(D[L].includes(nn))return alert('That name already exists');D[L][i]=nn;recs.forEach(k=>D[k].forEach(r=>{if(r[fld]===o)r[fld]=nn}));if(pr&&D[pr][o]!==undefined){D[pr][nn]=D[pr][o];delete D[pr][o]}save();go(cur)}
-function lDel(L,i,recs,fld,pr){const o=D[L][i],c=sum(recs,k=>D[k].filter(r=>r[fld]===o).length);if(!confirm('Delete "'+o+'"?'+(c?' '+c+' existing entries keep this name.':'')))return;D[L].splice(i,1);if(pr)delete D[pr][o];save();go(cur)}
-function setFp(i,v){D.fprice[D.fsup[i]]=v;save();go(cur)}
-function fsupTable(){return `<div class="card"><h3>Firewood suppliers</h3><div class="tw"><table><tr><th>Supplier</th><th>Price/kg ₹</th><th>Net (kg)</th><th>Amount ₹</th><th>Actions</th></tr>${D.fsup.map((s,i)=>{const F=D.fire.filter(r=>r.sup===s);return `<tr><td>${s}</td><td><input type="number" step="any" style="min-width:80px;width:90px" value="${D.fprice[s]??''}" onchange="setFp(${i},this.value)"></td><td>${f(sum(F,r=>n(r.loaded)-n(r.empty)))}</td><td>${f(sum(F,fAmt))}</td><td><button class="p sm" onclick="lRen('fsup',${i},['fire'],'sup','fprice')">Rename</button> <button class="del" onclick="lDel('fsup',${i},['fire'],'sup','fprice')">Delete</button></td></tr>`}).join('')}</table></div></div>`}
-function fdaily(){const ds=[...new Set(D.fire.map(r=>r.d))].sort().reverse();return `<div class="card"><h3>Daily firewood net total (kg)</h3><div class="tw"><table><tr><th>Date</th><th>Net (kg)</th></tr>${ds.map(d=>`<tr><td>${d.slice(8,10)}/${d.slice(5,7)}/${d.slice(2,4)}</td><td><b>${f(sum(D.fire.filter(r=>r.d===d),r=>n(r.loaded)-n(r.empty)))}</b></td></tr>`).join('')}</table></div></div>`}
-function wkTable(){return `<div class="card"><h3>Workers</h3><div class="tw"><table><tr><th>Worker</th><th>Total hours</th><th>Paid ₹</th><th>Actions</th></tr>${D.workers.map((w,i)=>`<tr><td>${w}</td><td>${f(sum(D.work.filter(r=>r.name===w),hrs))}</td><td>${f(sum(D.pay.filter(r=>r.name===w),r=>n(r.amt)))}</td><td><button class="p sm" onclick="lRen('workers',${i},['work','pay'],'name')">Rename</button> <button class="del" onclick="lDel('workers',${i},['work','pay'],'name')">Delete</button></td></tr>`).join('')}</table></div>${D.workers.length?'':'<p class="mu">Add a worker with + Worker in the form below.</p>'}</div>`}
-const GID='766622975487-bgf0iacmbplrmgliaiqp9pih676vpan2.apps.googleusercontent.com',XT='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-let GT=null,GF=null,GS='Not connected';
-const gst=m=>{GS=m;const e=document.getElementById('gs');if(e)e.textContent=m};
-function gLoadLib(){return new Promise((ok,no)=>{if(window.google&&google.accounts)return ok();const t=document.createElement('script');t.src='https://accounts.google.com/gsi/client';t.onload=ok;t.onerror=no;document.head.appendChild(t)})}
-async function gApi(u,o={}){const r=await fetch(u,Object.assign({},o,{headers:Object.assign({Authorization:'Bearer '+GT},o.headers||{})}));if(r.status===401){GT=null;gst('Session ended. Press Connect Google Drive again.');throw 0}if(!r.ok)throw 1;return r}
-function gMakeTokenClient(silent){return google.accounts.oauth2.initTokenClient({client_id:GID,scope:'https://www.googleapis.com/auth/drive.file',hint:'hariharateafactory@gmail.com',callback:async t=>{if(!t.access_token){gst('Google needs you to reconnect. Press Connect Google Drive.');return}GT=t.access_token;if(!silent){try{localStorage.setItem('teaFactoryDriveReconnect','1')}catch(e){}}await gStart()},error_callback:()=>gst(silent?'Could not reconnect silently. Press Connect Google Drive.':'Sign-in was cancelled.')})}
-async function gConnect(){try{gst('Connecting...');await gLoadLib();gMakeTokenClient(false).requestAccessToken()}catch(e){gst('Google sign-in is not available on this page. Open the app from your own website (Render).')}}
-async function gAutoReconnect(){let wasConnected=false;try{wasConnected=localStorage.getItem('teaFactoryDriveReconnect')==='1'}catch(e){}if(!wasConnected)return;try{gst('Reconnecting to Google Drive...');await gLoadLib();gMakeTokenClient(true).requestAccessToken({prompt:''})}catch(e){gst('Could not reconnect silently. Press Connect Google Drive.')}}
-async function gStart(){try{const r=await(await gApi('https://www.googleapis.com/drive/v3/files?q='+encodeURIComponent("name='TeaFactory.xlsx' and trashed=false")+'&fields=files(id)&spaces=drive')).json();
- if(r.files&&r.files.length){GF=r.files[0].id;const b=await(await gApi('https://www.googleapis.com/drive/v3/files/'+GF+'?alt=media')).blob();importXls(b,true);gst('Connected. Loaded from Google Drive at '+new Date().toLocaleTimeString())}else{GF=null;await gSave()}}catch(e){if(e!==0)gst('Could not reach Google Drive.')}}
-async function gSave(){if(!GT||!window.XLSX)return;try{const b=new Blob([XLSX.write(wbBuild(),{bookType:'xlsx',type:'array'})],{type:XT});
- if(GF){await gApi('https://www.googleapis.com/upload/drive/v3/files/'+GF+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':XT},body:b})}
- else{const fd=new FormData();fd.append('metadata',new Blob([JSON.stringify({name:'TeaFactory.xlsx',mimeType:XT})],{type:'application/json'}));fd.append('file',b);GF=(await(await gApi('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',body:fd})).json()).id}
- gst('Saved to Google Drive at '+new Date().toLocaleTimeString())}catch(e){if(e!==0)gst('Could not save to Google Drive.')}}
+let XS='';
+
+const xst=m=>{
+  XS=m;
+  const e=document.getElementById('xs');
+  if(e) e.textContent=m;
+};
+
+function wbBuild() {
+  const wb=XLSX.utils.book_new();
+
+  for(const k in SH) {
+    const rows=D[k].map(r=>{
+      const o={};
+      sec[k].F.forEach(([f,l])=>o[l]=r[f]??'');
+      sec[k].C.forEach(([l,fn])=>o[l]=fn(r));
+      return o;
+    });
+
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(rows.length?rows:[{}]),
+      SH[k]
+    );
+  }
+
+  XLSX.utils.book_append_sheet(
+    wb,
+    XLSX.utils.json_to_sheet([
+      {key:'suppliers',value:JSON.stringify(D.suppliers)},
+      {key:'oldStock',value:D.oldStock},
+      {key:'rem',value:JSON.stringify(D.rem)},
+      {key:'price',value:JSON.stringify(D.price)},
+      {key:'fsup',value:JSON.stringify(D.fsup)},
+      {key:'fprice',value:JSON.stringify(D.fprice)},
+      {key:'workers',value:JSON.stringify(D.workers)},
+      {key:'selDate',value:D.selDate||''}
+    ]),
+    'Settings'
+  );
+
+  XLSX.utils.book_append_sheet(
+    wb,
+    XLSX.utils.json_to_sheet(D.suppliers.map(s=>{
+      const kg=sum(D.leaf.filter(r=>r.sup===s),r=>n(r.kg));
+      const a=kg*n(D.price[s]);
+      const p=sum(D.sp.filter(r=>r.sup===s),r=>n(r.amt));
+      return {
+        Supplier:s,
+        'Price/kg':n(D.price[s]),
+        'Total kg':kg,
+        'Total amount':a,
+        'Paid':p,
+        'Balance':a-p
+      };
+    })),
+    'Suppliers'
+  );
+
+  return wb;
+}
+
+function importXls(file,q) {
+  if(!file) return;
+
+  const r=new FileReader();
+
+  r.onload=()=>{
+    try {
+      const wb=XLSX.read(r.result,{type:'array'});
+
+      for(const k in SH) {
+        const ws=wb.Sheets[SH[k]];
+        if(!ws) continue;
+
+        D[k]=XLSX.utils.sheet_to_json(ws,{defval:''})
+          .filter(o=>Object.keys(o).length)
+          .map(o=>{
+            const x={};
+            sec[k].F.forEach(([f,l])=>x[f]=String(o[l]??''));
+            return x;
+          });
+      }
+
+      const st=wb.Sheets.Settings;
+
+      if(st) {
+        XLSX.utils.sheet_to_json(st).forEach(o=>{
+          try {
+            if(o.key==='suppliers') D.suppliers=JSON.parse(o.value);
+            if(o.key==='oldStock') D.oldStock=o.value;
+            if(o.key==='rem') D.rem=JSON.parse(o.value);
+            if(o.key==='price') D.price=JSON.parse(o.value);
+            if(o.key==='fsup') D.fsup=JSON.parse(o.value);
+            if(o.key==='fprice') D.fprice=JSON.parse(o.value);
+            if(o.key==='workers') D.workers=JSON.parse(o.value);
+            if(o.key==='selDate'&&o.value) D.selDate=o.value;
+          } catch(e) {}
+        });
+      }
+
+      save();
+      go(cur);
+
+      if(!q) alert('Loaded from Excel');
+
+    } catch(e) {
+      alert('Could not read this Excel file');
+    }
+  };
+
+  r.readAsArrayBuffer(file);
+}
+
+function idb(op,v) {
+  return new Promise(res=>{
+    try {
+      const q=indexedDB.open('tf',1);
+
+      q.onupgradeneeded=()=>q.result.createObjectStore('h');
+
+      q.onsuccess=()=>{
+        const s=q.result.transaction(
+          'h',
+          op==='get'?'readonly':'readwrite'
+        ).objectStore('h');
+
+        const r=op==='get'?s.get('dir'):s.put(v,'dir');
+
+        r.onsuccess=()=>res(r.result);
+        r.onerror=()=>res(null);
+      };
+
+      q.onerror=()=>res(null);
+    } catch(e) {
+      res(null);
+    }
+  });
+}
+
+async function writeXls(ask) {
+  if(!dir||!window.XLSX) return false;
+
+  try {
+    const o={mode:'readwrite'};
+
+    if(await dir.queryPermission(o)!=='granted') {
+      if(!ask) {
+        xst('Press Save now to allow saving again.');
+        return false;
+      }
+
+      if(await dir.requestPermission(o)!=='granted') return false;
+    }
+
+    const fh=await dir.getFileHandle('TeaFactory.xlsx',{create:true});
+    const w=await fh.createWritable();
+
+    await w.write(XLSX.write(wbBuild(),{
+      bookType:'xlsx',
+      type:'array'
+    }));
+
+    await w.close();
+
+    xst('Saved to folder at '+new Date().toLocaleTimeString());
+    return true;
+
+  } catch(e) {
+    xst('Could not save to folder.');
+    return false;
+  }
+}
+
+async function pickDir() {
+  try {
+    dir=await showDirectoryPicker({mode:'readwrite'});
+    await idb('put',dir);
+
+    let ex=false;
+
+    try {
+      await dir.getFileHandle('TeaFactory.xlsx');
+      ex=true;
+    } catch(e) {}
+
+    if(ex&&confirm('TeaFactory.xlsx already exists in this folder. OK = load its data. Cancel = replace it with the data on this device.')) {
+      await loadDir(true);
+    } else {
+      await writeXls(true);
+    }
+
+  } catch(e) {
+    alert('Folder saving is not available here (use Chrome or Edge on a computer). Use Download Excel instead.');
+  }
+}
+
+function saveNow() {
+  if(!dir) return alert('Choose the folder first');
+  writeXls(true);
+}
+
+idb('get').then(h=>{
+  if(h) {
+    dir=h;
+    loadDir(false);
+  }
+});
+
+let RR={};
+
+const rg=k=>RR[k]||[SD().slice(0,8)+'01',SD()];
+
+function rdate(k,i,v) {
+  RR[k]=rg(k).slice();
+  RR[k][i]=v;
+  go('Report');
+}
+
+function rbox(k,t,body) {
+  const [a,b]=rg(k);
+
+  return `<div class="card">
+    <h3>${t}</h3>
+    <div style="display:flex;flex-wrap:nowrap;gap:8px">
+      <label style="flex:1;min-width:0">
+        Start date
+        <input type="date" style="min-width:0;width:100%" value="${a}" onchange="rdate('${k}',0,this.value)">
+      </label>
+      <label style="flex:1;min-width:0">
+        End date
+        <input type="date" style="min-width:0;width:100%" value="${b}" onchange="rdate('${k}',1,this.value)">
+      </label>
+    </div>
+    <div class="grid" style="margin-top:10px">${body(a,b)}</div>
+  </div>`;
+}
+
+function lAdd(L,m) {
+  const x=prompt(m);
+
+  if(x&&x.trim()&&!D[L].includes(x.trim())) {
+    D[L].push(x.trim());
+    save();
+    go(cur);
+  }
+}
+
+function lRen(L,i,recs,fld,pr) {
+  const o=D[L][i];
+  const x=prompt('Rename',o);
+
+  if(!x||!x.trim()||x.trim()===o) return;
+
+  const nn=x.trim();
+
+  if(D[L].includes(nn)) return alert('That name already exists');
+
+  D[L][i]=nn;
+
+  recs.forEach(k=>{
+    D[k].forEach(r=>{
+      if(r[fld]===o) r[fld]=nn;
+    });
+  });
+
+  if(pr&&D[pr][o]!==undefined) {
+    D[pr][nn]=D[pr][o];
+    delete D[pr][o];
+  }
+
+  save();
+  go(cur);
+}
+
+function lDel(L,i,recs,fld,pr) {
+  const o=D[L][i];
+  const c=sum(recs,k=>D[k].filter(r=>r[fld]===o).length);
+
+  if(!confirm('Delete "'+o+'"?'+(c?' '+c+' existing entries keep this name.':''))) return;
+
+  D[L].splice(i,1);
+
+  if(pr) delete D[pr][o];
+
+  save();
+  go(cur);
+}
+
+function setFp(i,v) {
+  D.fprice[D.fsup[i]]=v;
+  save();
+  go(cur);
+}
+
+function fsupTable() {
+  return `<div class="card">
+    <h3>Firewood suppliers</h3>
+    <div class="tw">
+      <table>
+        <tr>
+          <th>Supplier</th><th>Price/kg ₹</th><th>Net (kg)</th><th>Amount ₹</th><th>Actions</th>
+        </tr>
+        ${D.fsup.map((s,i)=>{
+          const F=D.fire.filter(r=>r.sup===s);
+
+          return `<tr>
+            <td>${s}</td>
+            <td><input type="number" step="any" style="min-width:80px;width:90px" value="${D.fprice[s]??''}" onchange="setFp(${i},this.value)"></td>
+            <td>${f(sum(F,r=>n(r.loaded)-n(r.empty)))}</td>
+            <td>${f(sum(F,fAmt))}</td>
+            <td>
+              <button class="p sm" onclick="lRen('fsup',${i},['fire'],'sup','fprice')">Rename</button>
+              <button class="del" onclick="lDel('fsup',${i},['fire'],'sup','fprice')">Delete</button>
+            </td>
+          </tr>`;
+        }).join('')}
+      </table>
+    </div>
+  </div>`;
+}
+
+function fdaily() {
+  const ds=[...new Set(D.fire.map(r=>r.d))].sort().reverse();
+
+  return `<div class="card">
+    <h3>Daily firewood net total (kg)</h3>
+    <div class="tw">
+      <table>
+        <tr><th>Date</th><th>Net (kg)</th></tr>
+        ${ds.map(d=>`<tr>
+          <td>${d.slice(8,10)}/${d.slice(5,7)}/${d.slice(2,4)}</td>
+          <td><b>${f(sum(D.fire.filter(r=>r.d===d),r=>n(r.loaded)-n(r.empty)))}</b></td>
+        </tr>`).join('')}
+      </table>
+    </div>
+  </div>`;
+}
+
+function wkTable() {
+  return `<div class="card">
+    <h3>Workers</h3>
+    <div class="tw">
+      <table>
+        <tr><th>Worker</th><th>Total hours</th><th>Paid ₹</th><th>Actions</th></tr>
+        ${D.workers.map((w,i)=>`<tr>
+          <td>${w}</td>
+          <td>${f(sum(D.work.filter(r=>r.name===w),hrs))}</td>
+          <td>${f(sum(D.pay.filter(r=>r.name===w),r=>n(r.amt)))}</td>
+          <td>
+            <button class="p sm" onclick="lRen('workers',${i},['work','pay'],'name')">Rename</button>
+            <button class="del" onclick="lDel('workers',${i},['work','pay'],'name')">Delete</button>
+          </td>
+        </tr>`).join('')}
+      </table>
+    </div>
+    ${D.workers.length?'':'<p class="mu">Add a worker with + Worker in the form below.</p>'}
+  </div>`;
+}
+
+const API_BASE='https://tea-factory-accounts-api.onrender.com';
+
+let GF=null;
+let driveReady=false;
+let GS='Not connected';
+
+const gst=m=>{
+  GS=m;
+  const e=document.getElementById('gs');
+  if(e) e.textContent=m;
+};
+
+// Google Drive login through Render
+function gConnect() {
+  gst('Opening Google sign-in...');
+  window.location.href=API_BASE+'/auth/google';
+}
+
+// Check existing Google Drive session
+async function gAutoReconnect() {
+  try {
+    gst('Checking Google Drive connection...');
+
+    const response=await fetch(
+      API_BASE+'/api/drive/status',
+      {credentials:'include'}
+    );
+
+    const result=await response.json();
+
+    if(!result.connected) {
+      driveReady=false;
+      gst('Not connected. Press Connect Google Drive.');
+      return;
+    }
+
+    driveReady=true;
+    await gStart();
+
+  } catch(e) {
+    driveReady=false;
+    gst('Could not reach the server. Try again later.');
+  }
+}
+
+// Load Excel from Google Drive
+async function gStart() {
+  if(!driveReady) return;
+
+  try {
+    gst('Loading TeaFactory.xlsx from Google Drive...');
+
+    const response=await fetch(
+      API_BASE+'/api/drive/load',
+      {credentials:'include'}
+    );
+
+    if(response.status===404) {
+      GF=null;
+      gst('No Excel file found. Creating one...');
+      await gSave();
+      return;
+    }
+
+    if(response.status===401) {
+      driveReady=false;
+      gst('Session expired. Press Connect Google Drive again.');
+      return;
+    }
+
+    if(!response.ok) throw new Error('Drive load failed');
+
+    const result=await response.json();
+
+    const bytes=Uint8Array.from(
+      atob(result.data),
+      c=>c.charCodeAt(0)
+    );
+
+    importXls(new Blob([bytes]),true);
+
+    gst('Connected. Loaded from Google Drive at '+new Date().toLocaleTimeString());
+
+  } catch(e) {
+    console.error(e);
+    gst('Could not load Excel from Google Drive.');
+  }
+}
+
+// Save Excel to Google Drive
+async function gSave() {
+  if(!driveReady||!window.XLSX) return;
+
+  try {
+    gst('Saving to Google Drive...');
+
+    const base64=XLSX.write(wbBuild(),{
+      bookType:'xlsx',
+      type:'base64'
+    });
+
+    const response=await fetch(
+      API_BASE+'/api/drive/save',
+      {
+        method:'POST',
+        credentials:'include',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({data:base64})
+      }
+    );
+
+    if(response.status===401) {
+      driveReady=false;
+      gst('Session expired. Press Connect Google Drive again.');
+      return;
+    }
+
+    if(!response.ok) throw new Error('Drive save failed');
+
+    const result=await response.json();
+
+    if(!result.success) throw new Error('Drive save failed');
+
+    gst('Saved to Google Drive at '+new Date().toLocaleTimeString());
+
+  } catch(e) {
+    console.error(e);
+    gst('Could not save to Google Drive.');
+  }
+}
+
 let cur='Home';
-function addRem(e){e.preventDefault();D.rem.push(rm.value);save();go('Home')}
-function supTable(){return `<div class="card"><h3>Suppliers</h3><div class="tw"><table><tr><th>Supplier</th><th>Price/kg ₹</th><th>Total (kg)</th><th>Amount ₹</th><th>Actions</th></tr>${D.suppliers.map((s,i)=>`<tr><td>${s}</td><td><input type="number" step="any" style="min-width:80px;width:90px" value="${D.price[s]??''}" onchange="setPrice(${i},this.value)"></td><td>${f(sum(D.leaf.filter(r=>r.sup===s),r=>n(r.kg)))}</td><td>${f(sum(D.leaf.filter(r=>r.sup===s),r=>n(r.kg))*n(D.price[s]))}</td><td><button class="p sm" onclick="renSup(${i})">Rename</button> <button class="del" onclick="delSup(${i})">Delete</button></td></tr>`).join('')}</table></div></div>`}
-function dailyTable(){const ds=[...new Set(D.leaf.map(r=>r.d))].sort().reverse();return `<div class="card"><h3>Daily green leaf total (kg)</h3><div class="tw"><table><tr><th>Date</th><th>Total (kg)</th></tr>${ds.map(d=>`<tr><td>${d.slice(8,10)}/${d.slice(5,7)}/${d.slice(2,4)}</td><td><b>${f(leafDay(d))}</b></td></tr>`).join('')}</table></div></div>`}
-function setPrice(i,v){D.price[D.suppliers[i]]=v;save();go(cur)}
-async function loadDir(ask){if(!dir)return;try{const o={mode:'readwrite'};if(await dir.queryPermission(o)!=='granted'){if(!ask){xst('Press Load from folder to reconnect to your Excel file.');go(cur);return}if(await dir.requestPermission(o)!=='granted')return}let fh;try{fh=await dir.getFileHandle('TeaFactory.xlsx')}catch(e){await writeXls(true);return}importXls(await fh.getFile(),true);xst('Loaded from folder at '+new Date().toLocaleTimeString())}catch(e){xst('Could not read the folder.')}}
-function supMonth(){const m=SD().slice(0,7);return D.suppliers.map((s,i)=>{const kg=sum(D.leaf.filter(r=>r.sup===s&&r.d.slice(0,7)===m),r=>n(r.kg)),amt=kg*n(D.price[s]),paid=sum(D.sp.filter(r=>r.sup===s&&r.d.slice(0,7)===m),r=>n(r.amt));return{s,kg,amt,paid,bal:amt-paid,c:COL[i%COL.length]}})}
-function pie(items){const tot=sum(items,x=>x.v);if(!tot)return '<p class="mu">No green leaf this month.</p>';let a=0,out='';items.forEach(x=>{if(!x.v)return;const fr=x.v/tot;if(fr>0.9999){out+=`<circle cx="100" cy="100" r="90" fill="${x.c}"/>`;return}const a2=a+fr*2*Math.PI,p=t=>[100+90*Math.sin(t),100-90*Math.cos(t)],[x1,y1]=p(a),[x2,y2]=p(a2);out+=`<path d="M100 100L${x1} ${y1}A90 90 0 ${fr>.5?1:0} 1 ${x2} ${y2}Z" fill="${x.c}" stroke="var(--card)" stroke-width="2"/>`;a=a2});return `<svg viewBox="0 0 200 200" width="210" height="210">${out}</svg>`}
-function supCard(){const R=supMonth(),m=SD().slice(0,7),S=k=>sum(R,x=>x[k]),tk=S('kg');return `<div class="card"><h3>Green leaf supply and payments — ${m.slice(5,7)}/${m.slice(0,4)}</h3><div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center"><div>${pie(R.map(x=>({v:x.kg,c:x.c})))}</div><div class="tw" style="flex:1;min-width:290px"><table><tr><th>Supplier</th><th>kg</th><th>%</th><th>Amount ₹</th><th>Paid ₹</th><th>Balance ₹</th></tr>${R.map(x=>`<tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${x.c};margin-right:6px"></span>${x.s}</td><td>${f(x.kg)}</td><td>${tk?f(x.kg/tk*100,1):0}%</td><td>${f(x.amt)}</td><td>${f(x.paid)}</td><td><b>${f(x.bal)}</b></td></tr>`).join('')}<tr><th>Total</th><th>${f(tk)}</th><th></th><th>${f(S('amt'))}</th><th>${f(S('paid'))}</th><th>${f(S('bal'))}</th></tr></table></div></div><h3 style="margin-top:14px">Enter payment to a supplier</h3>${form(sec.sp)}${table(sec.sp,D.sp.filter(r=>r.d.slice(0,7)===m))}<p class="mu">Set each supplier's price per kg in the Green leaf tab. Figures are for the month of the working date.</p></div>`}
-function renSup(i){const o=D.suppliers[i],s=prompt('Rename supplier',o);if(!s||!s.trim()||s.trim()===o)return;const nn=s.trim();if(D.suppliers.includes(nn))return alert('That supplier already exists');D.suppliers[i]=nn;D.leaf.forEach(r=>{if(r.sup===o)r.sup=nn});D.sp.forEach(r=>{if(r.sup===o)r.sup=nn});if(D.price[o]!==undefined){D.price[nn]=D.price[o];delete D.price[o]}save();go(cur)}
-function delSup(i){const o=D.suppliers[i],c=D.leaf.filter(r=>r.sup===o).length;if(!confirm('Delete supplier "'+o+'"?'+(c?'\n'+c+' existing leaf entries keep this name and stay in the records.':'')))return;D.suppliers.splice(i,1);delete D.price[o];save();go(cur)}
-function newSup(){const s=prompt('New supplier name');if(s&&s.trim()){D.suppliers.push(s.trim());save();go(cur)}}
-function restore(){try{D=Object.assign(D,JSON.parse(bk.value));save();go('Home');alert('Restored')}catch(e){alert('Invalid backup text')}}
-function go(p){cur=p;nav.innerHTML=Object.keys(pages).map(k=>`<button class="${k===p?'on':''}" onclick="go('${k}')">${k}</button>`).join('');app.innerHTML=pages[p]()}
-const nav=document.getElementById('nav'),app=document.getElementById('app');go('Home');gAutoReconnect();
-</script></body></html>
+
+function addRem(e) {
+  e.preventDefault();
+  D.rem.push(rm.value);
+  save();
+  go('Home');
+}
+
+function supTable() {
+  return `<div class="card">
+    <h3>Suppliers</h3>
+    <div class="tw">
+      <table>
+        <tr><th>Supplier</th><th>Price/kg ₹</th><th>Total (kg)</th><th>Amount ₹</th><th>Actions</th></tr>
+        ${D.suppliers.map((s,i)=>`
+          <tr>
+            <td>${s}</td>
+            <td><input type="number" step="any" style="min-width:80px;width:90px" value="${D.price[s]??''}" onchange="setPrice(${i},this.value)"></td>
+            <td>${f(sum(D.leaf.filter(r=>r.sup===s),r=>n(r.kg)))}</td>
+            <td>${f(sum(D.leaf.filter(r=>r.sup===s),r=>n(r.kg))*n(D.price[s]))}</td>
+            <td>
+              <button class="p sm" onclick="renSup(${i})">Rename</button>
+              <button class="del" onclick="delSup(${i})">Delete</button>
+            </td>
+          </tr>`).join('')}
+      </table>
+    </div>
+  </div>`;
+}
+
+function dailyTable() {
+  const ds=[...new Set(D.leaf.map(r=>r.d))].sort().reverse();
+
+  return `<div class="card">
+    <h3>Daily green leaf total (kg)</h3>
+    <div class="tw">
+      <table>
+        <tr><th>Date</th><th>Total (kg)</th></tr>
+        ${ds.map(d=>`<tr>
+          <td>${d.slice(8,10)}/${d.slice(5,7)}/${d.slice(2,4)}</td>
+          <td><b>${f(leafDay(d))}</b></td>
+        </tr>`).join('')}
+      </table>
+    </div>
+  </div>`;
+}
+
+function setPrice(i,v) {
+  D.price[D.suppliers[i]]=v;
+  save();
+  go(cur);
+}
+
+async function loadDir(ask) {
+  if(!dir) return;
+
+  try {
+    const o={mode:'readwrite'};
+
+    if(await dir.queryPermission(o)!=='granted') {
+      if(!ask) {
+        xst('Press Load from folder to reconnect to your Excel file.');
+        go(cur);
+        return;
+      }
+
+      if(await dir.requestPermission(o)!=='granted') return;
+    }
+
+    let fh;
+
+    try {
+      fh=await dir.getFileHandle('TeaFactory.xlsx');
+    } catch(e) {
+      await writeXls(true);
+      return;
+    }
+
+    importXls(await fh.getFile(),true);
+    xst('Loaded from folder at '+new Date().toLocaleTimeString());
+
+  } catch(e) {
+    xst('Could not read the folder.');
+  }
+}
+
+function supMonth() {
+  const m=SD().slice(0,7);
+
+  return D.suppliers.map((s,i)=>{
+    const kg=sum(D.leaf.filter(r=>r.sup===s&&r.d.slice(0,7)===m),r=>n(r.kg));
+    const amt=kg*n(D.price[s]);
+    const paid=sum(D.sp.filter(r=>r.sup===s&&r.d.slice(0,7)===m),r=>n(r.amt));
+
+    return {s,kg,amt,paid,bal:amt-paid,c:COL[i%COL.length]};
+  });
+}
+
+function pie(items) {
+  const tot=sum(items,x=>x.v);
+
+  if(!tot) return '<p class="mu">No green leaf this month.</p>';
+
+  let a=0,out='';
+
+  items.forEach(x=>{
+    if(!x.v) return;
+
+    const fr=x.v/tot;
+
+    if(fr>0.9999) {
+      out+=`<circle cx="100" cy="100" r="90" fill="${x.c}"/>`;
+      return;
+    }
+
+    const a2=a+fr*2*Math.PI;
+    const p=t=>[100+90*Math.sin(t),100-90*Math.cos(t)];
+    const [x1,y1]=p(a);
+    const [x2,y2]=p(a2);
+
+    out+=`<path d="M100 100L${x1} ${y1}A90 90 0 ${fr>.5?1:0} 1 ${x2} ${y2}Z" fill="${x.c}" stroke="var(--card)" stroke-width="2"/>`;
+
+    a=a2;
+  });
+
+  return `<svg viewBox="0 0 200 200" width="210" height="210">${out}</svg>`;
+}
+
+function supCard() {
+  const R=supMonth();
+  const m=SD().slice(0,7);
+  const S=k=>sum(R,x=>x[k]);
+  const tk=S('kg');
+
+  return `<div class="card">
+    <h3>Green leaf supply and payments — ${m.slice(5,7)}/${m.slice(0,4)}</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">
+      <div>${pie(R.map(x=>({v:x.kg,c:x.c})) )}</div>
+      <div class="tw" style="flex:1;min-width:290px">
+        <table>
+          <tr><th>Supplier</th><th>kg</th><th>%</th><th>Amount ₹</th><th>Paid ₹</th><th>Balance ₹</th></tr>
+          ${R.map(x=>`<tr>
+            <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${x.c};margin-right:6px"></span>${x.s}</td>
+            <td>${f(x.kg)}</td>
+            <td>${tk?f(x.kg/tk*100,1):0}%</td>
+            <td>${f(x.amt)}</td>
+            <td>${f(x.paid)}</td>
+            <td><b>${f(x.bal)}</b></td>
+          </tr>`).join('')}
+          <tr>
+            <th>Total</th><th>${f(tk)}</th><th></th>
+            <th>${f(S('amt'))}</th><th>${f(S('paid'))}</th><th>${f(S('bal'))}</th>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <h3 style="margin-top:14px">Enter payment to a supplier</h3>
+    ${form(sec.sp)}
+    ${table(sec.sp,D.sp.filter(r=>r.d.slice(0,7)===m))}
+    <p class="mu">Set each supplier's price per kg in the Green leaf tab. Figures are for the month of the working date.</p>
+  </div>`;
+}
+
+function renSup(i) {
+  const o=D.suppliers[i];
+  const s=prompt('Rename supplier',o);
+
+  if(!s||!s.trim()||s.trim()===o) return;
+
+  const nn=s.trim();
+
+  if(D.suppliers.includes(nn)) return alert('That supplier already exists');
+
+  D.suppliers[i]=nn;
+
+  D.leaf.forEach(r=>{if(r.sup===o)r.sup=nn;});
+  D.sp.forEach(r=>{if(r.sup===o)r.sup=nn;});
+
+  if(D.price[o]!==undefined) {
+    D.price[nn]=D.price[o];
+    delete D.price[o];
+  }
+
+  save();
+  go(cur);
+}
+
+function delSup(i) {
+  const o=D.suppliers[i];
+  const c=D.leaf.filter(r=>r.sup===o).length;
+
+  if(!confirm('Delete supplier "'+o+'"?'+(c?'\n'+c+' existing leaf entries keep this name and stay in the records.':''))) return;
+
+  D.suppliers.splice(i,1);
+  delete D.price[o];
+
+  save();
+  go(cur);
+}
+
+function newSup() {
+  const s=prompt('New supplier name');
+
+  if(s&&s.trim()) {
+    D.suppliers.push(s.trim());
+    save();
+    go(cur);
+  }
+}
+
+function restore() {
+  try {
+    D=Object.assign(D,JSON.parse(bk.value));
+    save();
+    go('Home');
+    alert('Restored');
+  } catch(e) {
+    alert('Invalid backup text');
+  }
+}
+
+const pages={
+  Home() {
+    const l=leafDay(SD());
+
+    return `
+      <div class="card">
+        <h3>Working date</h3>
+        <label>Date
+          <input type="date" value="${SD()}" onchange="D.selDate=this.value;save();go('Home')">
+        </label>
+        <p class="mu">Selected: <b>${dm(SD())}</b> (DDMMYY). This date is used in every tab until you change it here.</p>
+      </div>
+      ${supCard()}
+      <div class="grid">
+        ${stat("Selected day's green leaf (kg)",f(l))}
+        ${stat('Made tea 4:1 (kg)',f(l/4))}
+        ${stat('Firewood needed (kg)',f(l/4))}
+        ${stat('Workers today',new Set(D.work.filter(r=>r.d===SD()).map(r=>r.name)).size)}
+        ${stat('Available tea stock (kg)',f(teaStock()))}
+        ${BAGS.map(b=>stat(b+' bags',f(bagStock(b),0))).join('')}
+      </div>
+
+      <div class="card">
+        <h3>Google Drive (hariharateafactory@gmail.com)</h3>
+        <p class="mu">
+          Connect once. Your Excel file is saved to Google Drive through the Tea Factory server.
+          <b>TeaFactory.xlsx</b>.
+          <span id="gs">${GS}</span>
+        </p>
+        <p><button class="p" onclick="gConnect()">Connect Google Drive</button></p>
+      </div>
+
+      <div class="card">
+        <h3>Excel file (V:\\HHTF)</h3>
+        <p class="mu">
+          Press <b>Choose folder</b> once and select <b>V:\\HHTF\\</b>.
+          After that every change is saved automatically to <b>TeaFactory.xlsx</b>
+          in that folder (Chrome or Edge on a computer).
+          <span id="xs">${XS}</span>
+        </p>
+        <p>
+          <button class="p" onclick="pickDir()">Choose folder</button>
+          <button class="p" onclick="saveNow()">Save now</button>
+          <button class="p" onclick="loadDir(true)">Load from folder</button>
+          <button class="p" onclick="XLSX.writeFile(wbBuild(),'TeaFactory.xlsx')">Download Excel</button>
+          <label style="display:inline-flex">
+            Load from Excel
+            <input type="file" accept=".xlsx" onchange="importXls(this.files[0])">
+          </label>
+        </p>
+      </div>`;
+  },
+
+  'Green leaf'() {
+    return block('leaf',`<button type="button" class="p" onclick="newSup()">+ Supplier</button>`)+`${supTable()}${dailyTable()}`;
+  },
+
+  Firewood() {
+    return block('fire',`<button type="button" class="p" onclick="lAdd('fsup','New firewood supplier name')">+ Supplier</button>`)+fsupTable()+fdaily();
+  },
+
+  Workers() {
+    const wk={};
+
+    D.work.forEach(r=>{
+      const w=wkStart(r.d);
+      wk[w]=wk[w]||{};
+      wk[w][r.name]=(wk[w][r.name]||0)+hrs(r);
+    });
+
+    const rows=Object.keys(wk).sort().reverse().map(w=>
+      Object.entries(wk[w]).map(([nm,h])=>
+        `<tr><td>${dm(w)}</td><td>${nm}</td><td>${f(h)}</td></tr>`
+      ).join('')
+    ).join('');
+
+    return wkTable()+
+      block('work',`<button type="button" class="p" onclick="lAdd('workers','New worker name')">+ Worker</button>`)+
+      `<div class="card">
+        <h3>Weekly hours (Sat–Fri)</h3>
+        <div class="tw">
+          <table>
+            <tr><th>Week starting</th><th>Worker</th><th>Total hours</th></tr>
+            ${rows}
+          </table>
+        </div>
+      </div>`+
+      block('pay')+
+      `<div class="card">Total paid: <b>₹${f(sum(D.pay,r=>n(r.amt)))}</b></div>`;
+  },
+
+  Bags() {
+    return block('bags')+
+      `<div class="grid">${BAGS.map(b=>stat(b+' in stock',f(bagStock(b),0))).join('')}</div>`;
+  },
+
+  'Tea stock'() {
+    return `<div class="card">
+      <h3>Old stock</h3>
+      <label>Old stock (kg)
+        <input type="number" step="any" value="${D.oldStock}" onchange="D.oldStock=this.value;save();go('Tea stock')">
+      </label>
+      <p class="mu">
+        Made tea so far: ${f(madeTeaAll())} kg ·
+        Available: <b>${f(teaStock())} kg</b>
+      </p>
+    </div>`+
+    block('disp')+
+    `<div class="card">
+      <h3>Dispatch by bag mark</h3>
+      ${BAGS.map(b=>`<div>${b}: <b>${f(sum(D.disp.filter(r=>r.mark===b),r=>n(r.kg)))} kg</b></div>`).join('')}
+    </div>`;
+  },
+
+  'Tea waste'() {
+    const m=T().slice(0,7);
+    const prior=sum(D.waste.filter(r=>r.d.slice(0,7)<m),r=>n(r.kg));
+    const cur=sum(D.waste.filter(r=>r.d.slice(0,7)===m),r=>n(r.kg));
+    const op=1909+prior;
+
+    return `<div class="grid">
+      ${stat('Opening (kg)',f(op))}
+      ${stat('Generated this month (kg)',f(cur))}
+      ${stat('Next month opening (kg)',f(op+cur))}
+    </div><div style="height:12px"></div>`+block('waste');
+  },
+
+  EB() {
+    const l=D.eb[D.eb.length-1];
+
+    return (l?`<div class="grid">
+      ${stat('Total used (units)',f(n(l.close)-n(l.open)))}
+      ${stat('Bill amount ₹',f(ebAmt(l)))}
+      ${stat('Next opening',l.close)}
+    </div><div style="height:12px"></div>`:'')+block('eb');
+  },
+
+  Service() {
+    return block('svc')+
+      `<div class="card">Total: <b>₹${f(sum(D.svc,r=>n(r.cost)))}</b></div>`;
+  },
+
+  'M/C Tool'() {
+    return block('tools')+
+      `<div class="card">Total: <b>₹${f(sum(D.tools,r=>n(r.qty)*n(r.price)))}</b></div>`;
+  },
+
+  Note() {
+    return block('notes');
+  },
+
+  Report() {
+    const I=(a,b)=>r=>r.d>=a&&r.d<=b;
+
+    return rbox('leaf','Green leaf',(a,b)=>{
+      const L=D.leaf.filter(I(a,b));
+      return stat('Total (kg)',f(sum(L,r=>n(r.kg))))+
+        stat('Made tea 4:1 (kg)',f(sum(L,r=>n(r.kg))/4));
+    })+
+    rbox('fire','Firewood',(a,b)=>{
+      const F=D.fire.filter(I(a,b));
+      return stat('Net (kg)',f(sum(F,r=>n(r.loaded)-n(r.empty))))+
+        stat('Amount ₹',f(sum(F,fAmt)));
+    })+
+    rbox('rc','RC',(a,b)=>
+      stat('RC (kg)',f(sum(D.notes.filter(I(a,b)),r=>n(r.rc))))
+    )+
+    rbox('eb','EB',(a,b)=>{
+      const E=D.eb.filter(I(a,b));
+      return stat('Units used',f(sum(E,r=>n(r.close)-n(r.open))))+
+        stat('Bill ₹',f(sum(E,ebAmt)));
+    })+
+    rbox('lab','Labour',(a,b)=>
+      stat('Hours',f(sum(D.work.filter(I(a,b)),hrs)))+
+      stat('Paid ₹',f(sum(D.pay.filter(I(a,b)),r=>n(r.amt))))
+    );
+  }
+};
+
+function go(p) {
+  cur=p;
+  nav.innerHTML=Object.keys(pages).map(k=>
+    `<button class="${k===p?'on':''}" onclick="go('${k}')">${k}</button>`
+  ).join('');
+
+  app.innerHTML=pages[p]();
+}
+
+const nav=document.getElementById('nav');
+const app=document.getElementById('app');
+
+go('Home');
+gAutoReconnect();
+
+</script>
+</body>
+</html>
