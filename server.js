@@ -3,10 +3,9 @@ const express = require("express");
 const { google } = require("googleapis");
 const crypto = require("crypto");
 const { Readable } = require("stream");
+const cors = require("cors");
 
 const app = express();
-
-app.use(express.json({ limit: "20mb" }));
 
 const PORT = process.env.PORT || 3000;
 
@@ -20,7 +19,25 @@ const oauth = new google.auth.OAuth2(
   process.env.GOOGLE_REDIRECT_URI
 );
 
-// Secure login cookie
+// Allow your Static Site to communicate with this Web Service
+app.use(cors({
+  origin: FRONTEND_URL,
+  credentials: true
+}));
+
+app.use(express.json({ limit: "20mb" }));
+
+// Check required environment variables
+function checkConfig() {
+  return !!(
+    process.env.GOOGLE_CLIENT_ID &&
+    process.env.GOOGLE_CLIENT_SECRET &&
+    process.env.GOOGLE_REDIRECT_URI &&
+    process.env.SESSION_SECRET
+  );
+}
+
+// Create signed browser session
 function sign(value) {
   return crypto
     .createHmac("sha256", process.env.SESSION_SECRET)
@@ -30,14 +47,17 @@ function sign(value) {
 
 function validSession(req) {
   const cookie = req.headers.cookie || "";
-  const match = cookie.match(/drive_session=([^;]+)/);
+  const match = cookie.match(/(?:^|;\s*)drive_session=([^;]+)/);
 
   if (!match || !process.env.SESSION_SECRET) return false;
 
   const expected = sign("connected");
+  const received = match[1];
+
+  if (received.length !== expected.length) return false;
 
   return crypto.timingSafeEqual(
-    Buffer.from(match[1]),
+    Buffer.from(received),
     Buffer.from(expected)
   );
 }
@@ -45,7 +65,7 @@ function validSession(req) {
 function requireLogin(req, res, next) {
   if (!process.env.GOOGLE_REFRESH_TOKEN) {
     return res.status(503).json({
-      error: "Google Drive setup is incomplete"
+      error: "Google Drive is not configured"
     });
   }
 
@@ -58,7 +78,7 @@ function requireLogin(req, res, next) {
   next();
 }
 
-// Google Drive connection
+// Google Drive client
 function driveClient() {
   const auth = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -78,6 +98,12 @@ function driveClient() {
 
 // Start Google login
 app.get("/auth/google", (req, res) => {
+  if (!checkConfig()) {
+    return res.status(500).send(
+      "Google OAuth environment variables are missing."
+    );
+  }
+
   const url = oauth.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
@@ -89,12 +115,24 @@ app.get("/auth/google", (req, res) => {
   res.redirect(url);
 });
 
-// Google login callback
+// Google OAuth callback
 app.get("/oauth2callback", async (req, res) => {
   try {
+    if (req.query.error) {
+      return res.status(400).send(
+        "Google authorization was cancelled."
+      );
+    }
+
+    if (!req.query.code) {
+      return res.status(400).send(
+        "Google did not return an authorization code."
+      );
+    }
+
     const { tokens } = await oauth.getToken(req.query.code);
 
-    // First connection: show the refresh token once
+    // First connection: show refresh token once
     if (!process.env.GOOGLE_REFRESH_TOKEN) {
       if (!tokens.refresh_token) {
         return res.status(400).send(
@@ -102,18 +140,34 @@ app.get("/oauth2callback", async (req, res) => {
         );
       }
 
+      res.setHeader("Cache-Control", "no-store");
+
       return res.send(`
-        <h2>Google authorization successful!</h2>
-        <p>Copy this refresh token into Render Environment Variables.</p>
-        <textarea id="token" rows="5" style="width:95%">${tokens.refresh_token}</textarea>
-        <button onclick="navigator.clipboard.writeText(document.getElementById('token').value)">
-          Copy token
-        </button>
-        <p>Keep this token private. Do not share it.</p>
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>Google Drive Setup</title>
+        </head>
+        <body style="font-family:Arial;padding:25px">
+          <h2>Google authorization successful!</h2>
+          <p>Copy this refresh token into Render Environment Variables.</p>
+          <textarea id="token" rows="6"
+            style="width:100%;max-width:600px">${tokens.refresh_token}</textarea>
+          <p>
+            <button onclick="
+              navigator.clipboard.writeText(
+                document.getElementById('token').value
+              )
+            ">Copy token</button>
+          </p>
+          <p>Keep this token private.</p>
+        </body>
+        </html>
       `);
     }
 
-    // Subsequent connections
+    // Existing refresh token: create browser session
     const cookieValue = sign("connected");
 
     res.setHeader(
@@ -141,12 +195,20 @@ app.get("/api/drive/status", (req, res) => {
 // Save Excel file
 app.post("/api/drive/save", requireLogin, async (req, res) => {
   try {
-    if (!req.body.data) {
-      return res.status(400).json({ error: "Missing file data" });
+    const data = req.body.data;
+
+    if (
+      typeof data !== "string" ||
+      !data.length ||
+      !/^[A-Za-z0-9+/]*={0,2}$/.test(data)
+    ) {
+      return res.status(400).json({
+        error: "Invalid Excel data"
+      });
     }
 
+    const buffer = Buffer.from(data, "base64");
     const drive = driveClient();
-    const buffer = Buffer.from(req.body.data, "base64");
 
     const result = await drive.files.list({
       q: "name='TeaFactory.xlsx' and trashed=false",
@@ -183,7 +245,9 @@ app.post("/api/drive/save", requireLogin, async (req, res) => {
 
   } catch (err) {
     console.error("Drive save error:", err.message);
-    res.status(500).json({ error: "Drive save failed" });
+    res.status(500).json({
+      error: "Drive save failed"
+    });
   }
 });
 
@@ -218,10 +282,13 @@ app.get("/api/drive/load", requireLogin, async (req, res) => {
 
   } catch (err) {
     console.error("Drive load error:", err.message);
-    res.status(500).json({ error: "Drive load failed" });
+    res.status(500).json({
+      error: "Drive load failed"
+    });
   }
 });
 
+// Start server
 app.listen(PORT, "0.0.0.0", () => {
   console.log("Tea Factory server running on port " + PORT);
 });
