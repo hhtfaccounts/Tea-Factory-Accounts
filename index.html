@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harihara Tea Factory, Kundah, Nilgiris</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f1f5ef; --surface:#ffffff; --ink:#16241a; --muted:#51635a;
+  --forest:#173a26; --forest-ink:#eef4ea; --leaf:#4f8a3b; --brew:#a8501c; --line:#cfdacb;
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --sans:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1a13; --surface:#16251b; --ink:#e8efe5; --muted:#a3b5a8;
+    --forest:#0a1f13; --forest-ink:#eef4ea; --leaf:#86c06a; --brew:#e08a52; --line:#27402f; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1a13; --surface:#16251b; --ink:#e8efe5; --muted:#a3b5a8;
+  --forest:#0a1f13; --forest-ink:#eef4ea; --leaf:#86c06a; --brew:#e08a52; --line:#27402f; color-scheme:dark;
+}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.05rem/1.65 var(--sans)}
+h1,h2,h3{font-family:var(--serif);font-weight:700;line-height:1.1;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--brew);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--forest);color:var(--forest-ink)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--forest);z-index:30}
+.bar{display:flex;align-items:center;gap:18px;min-height:62px}
+.brand{font:700 1.2rem var(--serif);text-decoration:none;margin-right:auto}
+nav.links{display:flex;gap:20px}
+nav.links a{text-decoration:none;font-weight:500;font-size:.95rem;opacity:.9}
+nav.links a:hover{opacity:1;text-decoration:underline}
+.btn{font:600 .95rem var(--sans);border:0;border-radius:8px;padding:10px 18px;cursor:pointer;background:var(--brew);color:#fff;text-decoration:none;display:inline-block}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:inherit;border:1.5px solid currentColor}
+#loginBtn{background:var(--forest-ink);color:var(--forest)}
+@media (max-width:720px){nav.links{display:none}}
+
+/* hero */
+.hero{background:var(--forest);color:var(--forest-ink);position:relative;overflow:hidden}
+.hero svg{position:absolute;inset:0;width:100%;height:100%;opacity:.28}
+.hero .wrap{position:relative;padding-top:clamp(70px,12vw,140px);padding-bottom:clamp(70px,12vw,130px)}
+.hero h1{font-size:clamp(2.6rem,7.5vw,5.6rem);max-width:12ch;letter-spacing:-.02em}
+.hero p{max-width:46ch;font-size:1.2rem;margin:22px 0 30px;opacity:.92}
+.hero .row{display:flex;flex-wrap:wrap;gap:12px}
+
+section{padding:clamp(54px,8vw,96px) 0}
+section h2{font-size:clamp(1.9rem,4vw,2.8rem);margin-bottom:18px}
+.lead{max-width:62ch;color:var(--muted)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,64px);align-items:start}
+@media (max-width:760px){.split{grid-template-columns:1fr}}
+.facts{margin:0;padding:0;list-style:none;border-left:4px solid var(--leaf)}
+.facts li{padding:10px 0 10px 18px}
+.facts b{display:block;font-family:var(--serif);font-size:1.15rem}
+
+/* process: a true sequence */
+.steps{counter-reset:s;list-style:none;margin:30px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:0 28px}
+@media (max-width:760px){.steps{grid-template-columns:1fr}}
+.steps li{counter-increment:s;padding:18px 0;border-top:1.5px solid var(--line)}
+.steps li::before{content:counter(s);font:700 1.6rem var(--serif);color:var(--brew);display:block}
+.steps h3{font-size:1.2rem;margin:4px 0 6px}
+.steps p{margin:0;color:var(--muted);font-size:.98rem}
+
+/* gallery */
+.band{background:var(--surface);border-block:1px solid var(--line)}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+@media (max-width:760px){.gallery{grid-template-columns:repeat(2,1fr)}}
+.ph{aspect-ratio:4/3;border-radius:6px;overflow:hidden;background:var(--bg);border:1.5px dashed var(--line);display:grid;place-items:center;color:var(--muted);font-size:.9rem;text-align:center;padding:10px}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph:first-child{grid-column:span 2;aspect-ratio:auto}
+@media (max-width:760px){.ph:first-child{grid-column:span 2}}
+
+/* contact */
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,64px)}
+@media (max-width:760px){.contact{grid-template-columns:1fr}}
+.contact dl{margin:0}
+.contact dt{font-weight:600;margin-top:18px}
+.contact dd{margin:2px 0 0;color:var(--muted)}
+.contact a{color:var(--ink);font-weight:600}
+footer{background:var(--forest);color:var(--forest-ink);padding:28px 0;font-size:.92rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 28px;justify-content:space-between}
+
+/* staff */
+#staff{display:none;background:var(--surface);border-bottom:1px solid var(--line)}
+body.in #staff{display:block}
+#staff .wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:16px;padding-bottom:16px}
+#staff p{margin:0 auto 0 0}
+
+/* login dialog */
+dialog{border:0;border-radius:12px;padding:0;width:min(400px,92vw);background:var(--surface);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(8,20,12,.6)}
+dialog form{padding:28px}
+dialog h2{font-size:1.6rem;margin-bottom:6px}
+label{display:block;font-weight:600;margin-top:16px;font-size:.95rem}
+input{width:100%;margin-top:6px;padding:11px 12px;border:1.5px solid var(--line);border-radius:8px;font:inherit;background:var(--bg);color:var(--ink)}
+.err{color:#b3261e;min-height:1.4em;margin:10px 0 0;font-size:.92rem}
+@media (prefers-color-scheme:dark){.err{color:#ff9b8f}}
+.actions{display:flex;gap:10px;margin-top:10px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="#top">Harihara Tea Factory</a>
+    <nav class="links" aria-label="Main">
+      <a href="#about">About</a>
+      <a href="#process">Process</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="btn" id="loginBtn" type="button">Staff login</button>
+  </div>
+</header>
+
+<div id="staff" aria-live="polite">
+  <div class="wrap">
+    <p>Signed in as <b>HHTFstaff</b>.</p>
+    <a class="btn" href="account.html">Open account</a>
+    <button class="btn ghost" id="logoutBtn" type="button">Log out</button>
+  </div>
+</div>
+
+<main id="top">
+  <div class="hero">
+    <svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" fill="none" stroke="#9fd18a" stroke-width="1.5">
+      <path d="M-20 520C180 470 300 540 520 480S860 400 1220 450"/>
+      <path d="M-20 470C200 420 330 490 540 430S880 350 1220 400"/>
+      <path d="M-20 420C220 370 350 440 560 380S900 300 1220 350"/>
+      <path d="M-20 370C240 320 370 390 580 330S920 250 1220 300"/>
+      <path d="M-20 320C260 270 390 340 600 280S940 200 1220 250"/>
+      <path d="M-20 270C280 220 410 290 620 230S960 150 1220 200"/>
+      <path d="M-20 220C300 170 430 240 640 180S980 100 1220 150"/>
+      <path d="M-20 170C320 120 450 190 660 130S1000 50 1220 100"/>
+    </svg>
+    <div class="wrap">
+      <h1>Tea from the hills of Kundah</h1>
+      <p>Harihara Tea Factory processes Nilgiri tea in Kundah, from fresh green leaf to the finished cup.</p>
+      <div class="row">
+        <a class="btn" href="#contact">Contact us</a>
+        <a class="btn ghost" href="#process">See how we make tea</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="about">
+    <div class="wrap split">
+      <div>
+        <h2>A family-run factory in the Nilgiris</h2>
+        <p class="lead">We are a tea factory in Kundah, in the Nilgiris district of Tamil Nadu. Our proprietor, V. Hariharan, runs the factory and works directly with growers and buyers.</p>
+        <p class="lead">Call us to ask about current grades, quantities and delivery.</p>
+      </div>
+      <ul class="facts">
+        <li><b>Location</b>Thalaikadumattam, Bengalmattam P.O., Kundah, Nilgiris</li>
+        <li><b>Proprietor</b>V. Hariharan</li>
+        <li><b>Registered</b>GSTIN 33AFHPV3172N1ZY</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="process" class="band">
+    <div class="wrap">
+      <h2>From leaf to cup</h2>
+      <p class="lead">The usual path black tea takes through a factory like ours.</p>
+      <ol class="steps">
+        <li><h3>Plucking</h3><p>Fresh green leaf is hand-picked from the estates and brought to the factory.</p></li>
+        <li><h3>Withering</h3><p>Leaf is spread out to lose moisture and become soft enough to roll.</p></li>
+        <li><h3>Rolling</h3><p>The leaf is rolled to break the cells and release its natural juices.</p></li>
+        <li><h3>Fermentation</h3><p>The rolled leaf rests so the flavour and colour develop.</p></li>
+        <li><h3>Drying</h3><p>Hot air stops fermentation and dries the tea.</p></li>
+        <li><h3>Sorting and packing</h3><p>The tea is graded by leaf size, then packed for dispatch.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="gallery">
+    <div class="wrap">
+      <h2>Gallery</h2>
+      <p class="lead">Photos from the estate and the factory floor.</p>
+      <div class="gallery">
+        <!-- To add a photo: replace a placeholder div's text with <img src="your-photo.jpg" alt="describe the photo"> -->
+        <div class="ph">Photo 1 goes here</div>
+        <div class="ph">Photo 2 goes here</div>
+        <div class="ph">Photo 3 goes here</div>
+        <div class="ph">Photo 4 goes here</div>
+        <div class="ph">Photo 5 goes here</div>
+        <div class="ph">Photo 6 goes here</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="band">
+    <div class="wrap contact">
+      <div>
+        <h2>Get in touch</h2>
+        <p class="lead">For orders, prices and factory visits, call or write to us.</p>
+        <p><a class="btn" href="tel:+919444705802">Call 94447 05802</a></p>
+      </div>
+      <dl>
+        <dt>Phone</dt>
+        <dd><a href="tel:+919444705802">9444705802</a>, <a href="tel:+919894870802">9894870802</a></dd>
+        <dt>Email</dt>
+        <dd><a href="mailto:info@hariharateafactory.com">info@hariharateafactory.com</a></dd>
+        <dt>Address</dt>
+        <dd>No. 14/179-A, Thalaikadumattam,<br>Bengalmattam P.O., Kundah, Nilgiris – 643 204</dd>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Harihara Tea Factory</span>
+    <span>GSTIN 33AFHPV3172N1ZY</span>
+  </div>
+</footer>
+
+<dialog id="loginDlg" aria-labelledby="lt">
+  <form id="loginForm" method="dialog" novalidate>
+    <h2 id="lt">Staff login</h2>
+    <label for="u">Username</label>
+    <input id="u" autocomplete="username" required>
+    <label for="p">Password</label>
+    <input id="p" type="password" autocomplete="current-password" required>
+    <p class="err" id="err" role="alert"></p>
+    <div class="actions">
+      <button class="btn" type="submit">Log in</button>
+      <button class="btn ghost" type="button" id="cancel">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+(function(){
+  var dlg=document.getElementById('loginDlg'), form=document.getElementById('loginForm'),
+      err=document.getElementById('err'), loginBtn=document.getElementById('loginBtn');
+  // Credentials are stored as SHA-256 hashes, not plain text.
+  var USER='HHTFstaff';
+  var PASS_HASH=null;
+  function sha(s){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){
+    return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')})}
+  sha('Hariharan').then(function(h){PASS_HASH=h});
+
+  function setIn(on){
+    document.body.classList.toggle('in',on);
+    loginBtn.textContent=on?'Staff account':'Staff login';
+    try{ on?sessionStorage.setItem('hhtf','1'):sessionStorage.removeItem('hhtf'); }catch(e){}
+  }
+  try{ if(sessionStorage.getItem('hhtf')==='1') setIn(true); }catch(e){}
+
+  loginBtn.addEventListener('click',function(){if(document.body.classList.contains('in')){window.location.href='account.html';return;}err.textContent='';form.reset();dlg.showModal();document.getElementById('u').focus();});
+  document.getElementById('cancel').addEventListener('click',function(){dlg.close();});
+  document.getElementById('logoutBtn').addEventListener('click',function(){setIn(false);});
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var u=document.getElementById('u').value.trim(), p=document.getElementById('p').value;
+    sha(p).then(function(h){
+      if(u===USER && h===PASS_HASH){ dlg.close(); setIn(true); window.location.href='account.html'; }
+      else { err.textContent='Username or password is incorrect. Check both and try again.'; }
+    });
+  });
+})();
+</script>
+</body>
+</html>
