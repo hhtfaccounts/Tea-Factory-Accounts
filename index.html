@@ -359,7 +359,7 @@ h2{color:var(--forest)}
 
       const result = await response.json();
 
-      if (!response.ok || !result.ok) {
+      if (!response.ok || !result.success) {
         err.textContent = result.error || 'Username or password is incorrect.';
         return;
       }
