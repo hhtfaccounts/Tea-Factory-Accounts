@@ -1,7 +1,7 @@
 
 const express = require("express");
 const mysql = require("mysql2");
-const bcrypt = require("bcryptjs");
+
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const helmet = require("helmet");
@@ -131,16 +131,11 @@ app.post("/api/login", loginLimiter, async (req, res) => {
       });
     }
 
-    const valid = await bcrypt.compare(
-      password,
-      process.env.STAFF_PASSWORD_HASH
-    );
-
-    if (!valid) {
-      return res.status(401).json({
-        error: "Incorrect username or password."
-      });
-    }
+if (password !== process.env.STAFF_PASSWORD) {
+  return res.status(401).json({
+    error: "Incorrect username or password."
+  });
+}
 
     req.session.regenerate((err) => {
       if (err) {
