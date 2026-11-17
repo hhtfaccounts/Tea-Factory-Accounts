@@ -281,36 +281,118 @@ h2{color:var(--forest)}
   </form>
 </dialog>
 
+
 <script>
 (function(){
-  var dlg=document.getElementById('loginDlg'), form=document.getElementById('loginForm'),
-      err=document.getElementById('err'), loginBtn=document.getElementById('loginBtn');
-  // Credentials are stored as SHA-256 hashes, not plain text.
-  var USER='HHTFstaff';
-  var PASS_HASH=null;
-  function sha(s){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){
-    return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')})}
-  sha('Hariharan').then(function(h){PASS_HASH=h});
+  const dlg = document.getElementById('loginDlg');
+  const form = document.getElementById('loginForm');
+  const err = document.getElementById('err');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
 
-  function setIn(on){
-    document.body.classList.toggle('in',on);
-    loginBtn.textContent=on?'Staff account':'Staff login';
-    try{ on?sessionStorage.setItem('hhtf','1'):sessionStorage.removeItem('hhtf'); }catch(e){}
+  let authenticated = false;
+
+  function setIn(on) {
+    authenticated = on;
+    document.body.classList.toggle('in', on);
+    loginBtn.textContent = on ? 'Staff account' : 'Staff login';
   }
-  try{ if(sessionStorage.getItem('hhtf')==='1') setIn(true); }catch(e){}
 
-  loginBtn.addEventListener('click',function(){if(document.body.classList.contains('in')){window.location.href='account.html';return;}err.textContent='';form.reset();dlg.showModal();document.getElementById('u').focus();});
-  document.getElementById('cancel').addEventListener('click',function(){dlg.close();});
-  document.getElementById('logoutBtn').addEventListener('click',function(){setIn(false);});
-  form.addEventListener('submit',function(e){
-    e.preventDefault();
-    var u=document.getElementById('u').value.trim(), p=document.getElementById('p').value;
-    sha(p).then(function(h){
-      if(u===USER && h===PASS_HASH){ dlg.close(); setIn(true); window.location.href='account.html'; }
-      else { err.textContent='Username or password is incorrect. Check both and try again.'; }
-    });
+  // Check whether Hostinger already has a valid login session.
+  async function checkSession() {
+    try {
+      const response = await fetch('/api/auth/me', {
+        credentials: 'same-origin'
+      });
+
+      if (!response.ok) {
+        setIn(false);
+        return;
+      }
+
+      const result = await response.json();
+      setIn(result.authenticated === true);
+    } catch (error) {
+      console.error('Session check failed:', error);
+      setIn(false);
+    }
+  }
+
+  // Open the dashboard if already logged in.
+  loginBtn.addEventListener('click', function() {
+    if (authenticated) {
+      window.location.href = '/account.html';
+      return;
+    }
+
+    err.textContent = '';
+    form.reset();
+    dlg.showModal();
+    document.getElementById('u').focus();
   });
+
+  document.getElementById('cancel').addEventListener('click', function() {
+    dlg.close();
+  });
+
+  // REAL SERVER LOGIN
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById('u').value.trim();
+    const password = document.getElementById('p').value;
+
+    err.textContent = 'Logging in...';
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        err.textContent = result.error || 'Username or password is incorrect.';
+        return;
+      }
+
+      dlg.close();
+      setIn(true);
+      window.location.href = '/account.html';
+
+    } catch (error) {
+      console.error('Login failed:', error);
+      err.textContent = 'Could not connect to the server. Try again.';
+    }
+  });
+
+  // REAL SERVER LOGOUT
+  logoutBtn.addEventListener('click', async function() {
+    try {
+      await fetch('/api/logout', {
+        method: 'POST',
+        credentials: 'same-origin'
+      });
+    } catch (error) {
+      console.error('Logout request failed:', error);
+    }
+
+    setIn(false);
+    window.location.reload();
+  });
+
+  // Check session whenever homepage opens.
+  checkSession();
 })();
 </script>
+
 </body>
 </html>
