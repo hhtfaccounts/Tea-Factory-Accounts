@@ -20,7 +20,7 @@ const required = [
   "DB_PASSWORD",
   "SESSION_SECRET",
   "STAFF_USERNAME",
-  "STAFF_PASSWORD_HASH"
+  "STAFF_PASSWORD"
 ];
 
 for (const name of required) {
