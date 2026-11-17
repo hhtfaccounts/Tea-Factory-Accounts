@@ -4,6 +4,7 @@ const { google } = require("googleapis");
 const crypto = require("crypto");
 const { Readable } = require("stream");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
@@ -19,13 +20,25 @@ const oauth = new google.auth.OAuth2(
   process.env.GOOGLE_REDIRECT_URI
 );
 
-// Allow your Static Site to communicate with this Web Service
+// CORS
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: [
+    FRONTEND_URL,
+    "https://hariharateafactory.com",
+    "https://www.hariharateafactory.com"
+  ],
   credentials: true
 }));
 
 app.use(express.json({ limit: "20mb" }));
+
+// Serve frontend files from the main project folder
+app.use(express.static(__dirname));
+
+// Homepage
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 
 // Check required environment variables
 function checkConfig() {
@@ -132,7 +145,6 @@ app.get("/oauth2callback", async (req, res) => {
 
     const { tokens } = await oauth.getToken(req.query.code);
 
-    // First connection: show refresh token once
     if (!process.env.GOOGLE_REFRESH_TOKEN) {
       if (!tokens.refresh_token) {
         return res.status(400).send(
@@ -151,7 +163,7 @@ app.get("/oauth2callback", async (req, res) => {
         </head>
         <body style="font-family:Arial;padding:25px">
           <h2>Google authorization successful!</h2>
-          <p>Copy this refresh token into Render Environment Variables.</p>
+          <p>Copy this refresh token into your server environment variables.</p>
           <textarea id="token" rows="6"
             style="width:100%;max-width:600px">${tokens.refresh_token}</textarea>
           <p>
@@ -167,7 +179,6 @@ app.get("/oauth2callback", async (req, res) => {
       `);
     }
 
-    // Existing refresh token: create browser session
     const cookieValue = sign("connected");
 
     res.setHeader(
