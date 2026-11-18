@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Harihara Tea Factory</title>
+<title>Tea Factory Accounts</title>
 <link rel="icon" id="fav" href="data:,">
 <style>
 :root{color-scheme:dark;--bg1:#07170e;--bg2:#0c2a19;--b1:#1f7a4a;--b2:#6b5a1c;--b3:#14633a;--glass:rgba(255,255,255,.07);--glass2:rgba(255,255,255,.12);--tx:#e6eee4;--mu:#9fb3a3;--ac:#4fa361;--acl:#8fe0a0;--bd:rgba(255,255,255,.16);--sh:0 8px 32px rgba(0,0,0,.4);--card:rgba(30,45,34,.8);--bg:transparent;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -534,7 +534,6 @@ Home() {
 
     ${supCard()}
 
-    ${leafChartCard()}
 
     <div class="grid">
         ${stat("Selected day's green leaf (kg)",f(l))}
@@ -547,7 +546,7 @@ Home() {
 
     <div class="card">
         <h3>Database connection</h3>
-        <p class="mu">Your factory data is stored.</p>
+        <p class="mu">Your factory data is stored centrally in the Hostinger MySQL database. Changes are automatically saved and shared with other logged-in computers.</p>
         <p id="dbStatus">Connecting...</p>
         <button class="p" onclick="manualSave()">Save now</button>
         <button class="p" onclick="loadFromServer(true)">Reload server data</button>
@@ -1006,11 +1005,28 @@ function setPrice(i,v) {
     go(cur);
 }
 
-function supMonth() {
-    const m=SD().slice(0,7);
+function inPeriod(d){
+    if(!d)return false;
+    const sd=SD();
+    if(chartMode==='week'){
+        const x=new Date(sd+'T00:00');
+        x.setDate(x.getDate()-6);
+        return d>=ymd(x)&&d<=sd;
+    }
+    if(chartMode==='month')return d.slice(0,7)===sd.slice(0,7);
+    return d.slice(0,4)===sd.slice(0,4);
+}
 
+function periodLabel(){
+    const sd=SD();
+    if(chartMode==='week')return 'last 7 days to '+dm(sd);
+    if(chartMode==='month')return sd.slice(5,7)+'/'+sd.slice(0,4);
+    return sd.slice(0,4);
+}
+
+function supMonth() {
     return D.suppliers.map((s,i)=>{
-        const kg=sum(D.leaf.filter(r=>r.sup===s&&r.d.slice(0,7)===m),r=>n(r.kg));
+        const kg=sum(D.leaf.filter(r=>r.sup===s&&inPeriod(r.d)),r=>n(r.kg));
         const amt=kg*n(D.price[s]);
 
         return {s,kg,amt,c:COL[i%COL.length]};
@@ -1046,16 +1062,13 @@ function pie(items) {
     return `<svg viewBox="0 0 200 200" width="210" height="210">${out}</svg>`;
 }
 
-/* Home supplier card: payment entry form, Paid and Balance removed */
-function supCard() {
+/* Home supplier card: Week / Month / Year switch lives here */
+function supBody() {
     const R=supMonth();
-    const m=SD().slice(0,7);
     const S=k=>sum(R,x=>x[k]);
     const tk=S('kg');
 
-    return `<div class="card">
-    <h3>Green leaf supply — ${m.slice(5,7)}/${m.slice(0,4)}</h3>
-    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">
+    return `<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">
     <div>${pie(R.map(x=>({v:x.kg,c:x.c})))}</div>
     <div class="tw" style="flex:1;min-width:260px">
     <table>
@@ -1066,7 +1079,15 @@ function supCard() {
     <td>${f(x.amt)}</td>
     </tr>`).join('')}
     <tr><th>Total</th><th>${f(tk)}</th><th></th><th>${f(S('amt'))}</th></tr>
-    </table></div></div>
+    </table></div></div>`;
+}
+
+function supCard() {
+    const seg=['week','month','year'].map(m=>`<button class="${m===chartMode?'on':''}" onclick="setChart('${m}')">${m[0].toUpperCase()+m.slice(1)}</button>`).join('');
+    return `<div class="card" id="supCard">
+    <div class="chead"><h3>Green leaf supply — <span id="supTitle">${periodLabel()}</span></h3>
+    <div class="seg" data-m="${chartMode}"><i class="sind"></i>${seg}</div></div>
+    <div id="supBody">${supBody()}</div>
     </div>`;
 }
 
@@ -1168,83 +1189,13 @@ const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','De
 const DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const ymd=x=>[x.getFullYear(),String(x.getMonth()+1).padStart(2,'0'),String(x.getDate()).padStart(2,'0')].join('-');
 
-function chartData(){
-    const sd=SD(),out=[];
-    if(chartMode==='week'){
-        for(let i=6;i>=0;i--){
-            const x=new Date(sd+'T00:00');
-            x.setDate(x.getDate()-i);
-            out.push({l:DAY[x.getDay()],v:leafDay(ymd(x)),t:DAY[x.getDay()]+' '+x.getDate()+' '+MON[x.getMonth()]});
-        }
-    } else if(chartMode==='month'){
-        const y=+sd.slice(0,4),m=+sd.slice(5,7),days=new Date(y,m,0).getDate();
-        for(let d=1;d<=days;d++){
-            const k=y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
-            out.push({l:String(d),v:leafDay(k),t:d+' '+MON[m-1]+' '+y});
-        }
-    } else {
-        const y=sd.slice(0,4);
-        for(let m=0;m<12;m++){
-            const p=y+'-'+String(m+1).padStart(2,'0');
-            out.push({l:MON[m],v:sum(D.leaf.filter(r=>r.d&&r.d.slice(0,7)===p),r=>n(r.kg)),t:MON[m]+' '+y});
-        }
-    }
-    return out;
-}
-
-function chartBody(){
-    const data=chartData();
-    window._cd=data;
-    const max=Math.max(...data.map(x=>x.v),1);
-    const tot=sum(data,x=>x.v);
-    const best=data.reduce((a,b)=>b.v>a.v?b:a,data[0]);
-    const unit=chartMode==='year'?'month':'day';
-    const title=chartMode==='week'?'last 7 days to '+dm(SD()):chartMode==='month'?MON[+SD().slice(5,7)-1]+' '+SD().slice(0,4):SD().slice(0,4);
-    const showV=data.length<=12;
-    return `<div class="csum">
-        <div><b class="cu" data-v="${tot}">0</b>Total kg · ${title}</div>
-        <div><b class="cu" data-v="${tot/data.length}">0</b>Average kg per ${unit}</div>
-        <div><b>${tot?best.t:'-'}</b>${tot?'Best '+unit+' ('+f(best.v)+' kg)':'Best '+unit}</div>
-    </div>
-    <div class="bars">${data.map((x,i)=>{
-        const p=x.v?Math.max(x.v/max*100,2):0;
-        return `<div class="col${tot&&x===best?' best':''}" onclick="barInfo(${i},this)"><div class="bw">${showV&&x.v?`<span class="bv" style="bottom:calc(${p}% + 3px)">${f(x.v,0)}</span>`:''}<div class="bar" style="height:${p}%;--i:${i}"></div></div><div class="bl">${chartMode==='month'&&i%2?'':x.l}</div></div>`;
-    }).join('')}</div>
-    <p class="mu" id="cinfo">${tot?'Tap a bar to see its weight.':'No green leaf entries in this period yet.'}</p>`;
-}
-
-function leafChartCard(){
-    const seg=['week','month','year'].map(m=>`<button class="${m===chartMode?'on':''}" onclick="setChart('${m}')">${m[0].toUpperCase()+m.slice(1)}</button>`).join('');
-    return `<div class="card" id="chartCard"><div class="chead"><h3>Green leaf received</h3><div class="seg" data-m="${chartMode}"><i class="sind"></i>${seg}</div></div><div id="chartBody">${chartBody()}</div></div>`;
-}
-
 function setChart(m){
     chartMode=m;
-    const c=document.getElementById('chartCard');
+    const c=document.getElementById('supCard');
     c.querySelector('.seg').dataset.m=m;
     c.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===m));
-    document.getElementById('chartBody').innerHTML=chartBody();
-    runCounts();
-}
-
-function barInfo(i,el){
-    const x=window._cd[i];
-    document.getElementById('cinfo').innerHTML='<b>'+x.t+'</b> — '+f(x.v)+' kg';
-    document.querySelectorAll('#chartCard .col').forEach(c=>c.classList.toggle('sel',c===el));
-}
-
-function runCounts(){
-    document.querySelectorAll('.cu').forEach(el=>{
-        const v=+el.dataset.v||0;
-        if(matchMedia('(prefers-reduced-motion:reduce)').matches||!v){el.textContent=f(v);return;}
-        const t0=performance.now();
-        const step=t=>{
-            const k=Math.min((t-t0)/900,1),e=1-Math.pow(1-k,3);
-            el.textContent=f(v*e);
-            if(k<1)requestAnimationFrame(step);
-        };
-        requestAnimationFrame(step);
-    });
+    document.getElementById('supTitle').textContent=periodLabel();
+    document.getElementById('supBody').innerHTML=supBody();
 }
 
 let cur='Home';
@@ -1285,7 +1236,6 @@ function go(p) {
     app.classList.remove('enter');
     app.innerHTML=pages[p]();
     if(changed){void app.offsetWidth;app.classList.add('enter');window.scrollTo({top:0,behavior:'smooth'});}
-    runCounts();
 }
 
 const nav=document.getElementById('nav');
