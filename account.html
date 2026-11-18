@@ -121,6 +121,13 @@ button.gh{background:var(--glass2);color:var(--tx);border:1px solid var(--bd);pa
 .bv{position:absolute;left:0;right:0;text-align:center;font-size:10px;animation:fadein .6s .7s both}
 @keyframes grow{from{transform:scaleY(0);opacity:.3}to{transform:scaleY(1);opacity:1}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
+
+/* glass pie */
+.pie{display:inline-block;filter:drop-shadow(0 12px 26px rgba(0,0,0,.5));-webkit-user-select:none;user-select:none}
+.pie svg{overflow:visible}
+.ps{cursor:pointer;transform-origin:100px 100px;animation:pin .9s cubic-bezier(.2,.9,.3,1) both;transition:transform .3s cubic-bezier(.3,1.5,.5,1),filter .25s,fill-opacity .25s}
+.ps.hot,.ps:hover{transform:scale(1.06);filter:brightness(1.25) drop-shadow(0 0 8px rgba(255,255,255,.45));fill-opacity:.95}
+@keyframes pin{from{opacity:0;transform:scale(.6) rotate(-40deg)}to{opacity:1;transform:none}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -1036,30 +1043,68 @@ function supMonth() {
 function pie(items) {
     const tot=sum(items,x=>x.v);
 
-    if(!tot)return '<p class="mu">No green leaf this month.</p>';
+    if(!tot)return '<p class="mu">No green leaf in this period.</p>';
 
+    window._pie={items,tot};
+
+    const R=90,r=56,m=(R+r)/2,w=R-r;
+    const P=(rad,t)=>[100+rad*Math.sin(t),100-rad*Math.cos(t)];
     let a=0,out='';
 
-    items.forEach(x=>{
+    items.forEach((x,i)=>{
         if(!x.v)return;
 
         const fr=x.v/tot;
 
         if(fr>0.9999) {
-            out+=`<circle cx="100" cy="100" r="90" fill="${x.c}"/>`;
+            out+=`<circle class="ps" data-i="${i}" cx="100" cy="100" r="${m}" fill="none" stroke="${x.c}" stroke-opacity=".82" stroke-width="${w}"/>`;
             return;
         }
 
         const a2=a+fr*2*Math.PI;
-        const p=t=>[100+90*Math.sin(t),100-90*Math.cos(t)];
-        const [x1,y1]=p(a);
-        const [x2,y2]=p(a2);
+        const [x1,y1]=P(R,a),[x2,y2]=P(R,a2),[x3,y3]=P(r,a2),[x4,y4]=P(r,a);
+        const big=fr>.5?1:0;
 
-        out+=`<path d="M100 100L${x1} ${y1}A90 90 0 ${fr>.5?1:0} 1 ${x2} ${y2}Z" fill="${x.c}" stroke="rgba(255,255,255,.7)" stroke-width="2"/>`;
+        out+=`<path class="ps" data-i="${i}" style="animation-delay:${i*90}ms" d="M${x1} ${y1}A${R} ${R} 0 ${big} 1 ${x2} ${y2}L${x3} ${y3}A${r} ${r} 0 ${big} 0 ${x4} ${y4}Z" fill="${x.c}" fill-opacity=".82" stroke="rgba(255,255,255,.55)" stroke-width="1.6" stroke-linejoin="round"/>`;
         a=a2;
     });
 
-    return `<svg viewBox="0 0 200 200" width="210" height="210">${out}</svg>`;
+    const ring=`M100 ${100-R}A${R} ${R} 0 1 1 100 ${100+R}A${R} ${R} 0 1 1 100 ${100-R}ZM100 ${100-r}A${r} ${r} 0 1 0 100 ${100+r}A${r} ${r} 0 1 0 100 ${100-r}Z`;
+
+    return `<div class="pie" onmouseleave="pieReset()">
+    <svg viewBox="0 0 200 200" width="230" height="230" onmouseover="pieOver(event)" onclick="pieOver(event)">
+    <defs>
+    <radialGradient id="pg1" cx=".28" cy=".18" r=".85"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset=".45" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></radialGradient>
+    <radialGradient id="pg2" cx=".35" cy=".25" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset="1" stop-color="#fff" stop-opacity=".04"/></radialGradient>
+    <filter id="pb" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter>
+    </defs>
+    <circle cx="100" cy="100" r="${R+2}" fill="rgba(255,255,255,.06)"/>
+    <g>${out}</g>
+    <path d="${ring}" fill="url(#pg1)" fill-rule="evenodd" pointer-events="none"/>
+    <circle cx="100" cy="100" r="${R}" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.2" pointer-events="none"/>
+    <circle cx="100" cy="100" r="${r}" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.2" pointer-events="none"/>
+    <path d="M${P(R-4,-2.5)[0]} ${P(R-4,-2.5)[1]}A${R-4} ${R-4} 0 0 1 ${P(R-4,-1.1)[0]} ${P(R-4,-1.1)[1]}" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-linecap="round" filter="url(#pb)" pointer-events="none"/>
+    <circle cx="100" cy="100" r="${r-5}" fill="url(#pg2)" stroke="rgba(255,255,255,.3)" stroke-width="1" pointer-events="none"/>
+    <text id="pc1" x="100" y="99" text-anchor="middle" font-size="22" font-weight="700" fill="#e6eee4" pointer-events="none"></text>
+    <text id="pc2" x="100" y="117" text-anchor="middle" font-size="9.5" fill="#9fb3a3" pointer-events="none"></text>
+    </svg></div>`;
+}
+
+function pieReset(){
+    const p=window._pie,a=document.getElementById('pc1'),b=document.getElementById('pc2');
+    if(!p||!a)return;
+    a.textContent=f(p.tot);
+    b.textContent='kg total';
+    document.querySelectorAll('.ps').forEach(e=>e.classList.remove('hot'));
+}
+
+function pieOver(e){
+    const el=e.target.closest&&e.target.closest('.ps');
+    if(!el||!window._pie)return;
+    const x=window._pie.items[+el.dataset.i];
+    document.getElementById('pc1').textContent=f(x.v);
+    document.getElementById('pc2').textContent=x.n+' · '+f(x.v/window._pie.tot*100,1)+'%';
+    document.querySelectorAll('.ps').forEach(p=>p.classList.toggle('hot',p===el));
 }
 
 /* Home supplier card: Week / Month / Year switch lives here */
@@ -1069,7 +1114,7 @@ function supBody() {
     const tk=S('kg');
 
     return `<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">
-    <div>${pie(R.map(x=>({v:x.kg,c:x.c})))}</div>
+    <div>${pie(R.map(x=>({v:x.kg,c:x.c,n:x.s})))}</div>
     <div class="tw" style="flex:1;min-width:260px">
     <table>
     <tr><th>Supplier</th><th>kg</th><th>%</th><th>Amount ₹</th></tr>
@@ -1196,6 +1241,7 @@ function setChart(m){
     c.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===m));
     document.getElementById('supTitle').textContent=periodLabel();
     document.getElementById('supBody').innerHTML=supBody();
+    pieReset();
 }
 
 let cur='Home';
@@ -1235,6 +1281,7 @@ function go(p) {
     window.lastPage=p;
     app.classList.remove('enter');
     app.innerHTML=pages[p]();
+    pieReset();
     if(changed){void app.offsetWidth;app.classList.add('enter');window.scrollTo({top:0,behavior:'smooth'});}
 }
 
