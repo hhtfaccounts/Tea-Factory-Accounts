@@ -1456,7 +1456,8 @@ function parseReport(words,text){
     // date (day/month/year)
     const dr=/(\d{1,2})\s*[\/\-.]\s*(\d{1,2})\s*[\/\-.]\s*(20\d{2})/g;
     let mm;
-    while((mm=dr.exec(text||''))){
+    const dtext=(text||'').replace(/(\d)[Oo](?=[\d\s\/\-.])/g,'$10').replace(/([\/\-.])[Oo](?=\d)/g,'$10').replace(/(\d)[lI|](?=\d)/g,'$11');
+    while((mm=dr.exec(dtext))){
         const d=+mm[1],mo=+mm[2];
         if(d>=1&&d<=31&&mo>=1&&mo<=12){res.date=mm[3]+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0');break;}
     }
@@ -1548,6 +1549,10 @@ function findNear(name){
         const st=String(s).toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
         // every word of the saved supplier appears in the name (e.g. "B KUMAR ites")
         if(st.length&&st.every(t=>toks.includes(t))){if(bd>0){bd=0;best=s;}return;}
+        // a main word (4+ letters) is the same or nearly the same (e.g. "KUMAR ites" ~ "B KUMAR")
+        let hit=false;
+        toks.forEach(a=>{if(a.length>=4)st.forEach(b=>{if(b.length>=4&&lev(a,b)<=1)hit=true;});});
+        if(hit){if(bd>1){bd=1;best=s;}return;}
         const d=Math.min(lev(k,normName(s)),lev(sk,simKey(s)));
         if(d<bd){bd=d;best=s;}
     });
@@ -1678,7 +1683,8 @@ function impOpen(res,url){
         if(ex&&res.date&&D.leaf.some(x=>x.d===res.date&&x.sup===ex&&Math.abs(n(x.kg)-r.kg)<0.005))r.keep=false;
     });
     window._imp={rows,total:res.total};
-    document.getElementById('impDate').value=res.date||'';
+    document.getElementById('impDate').value=res.date||SD();
+    if(!res.date)notify('Date not read from the photo – using the working date. Please check it.');
     document.getElementById('impImg').src=url;
     document.getElementById('supl').innerHTML=D.suppliers.map(x=>'<option value="'+esc(x)+'">').join('');
     document.querySelector('#impTbl tbody').innerHTML=rows.map((r,i)=>
