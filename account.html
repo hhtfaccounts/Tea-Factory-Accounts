@@ -1532,6 +1532,17 @@ function parseReport(words,text){
 }
 /*PURE-END*/
 
+function dateFromText(t){
+    const x=String(t||'').replace(/(\d)[Oo](?=[\d\s\/\-.])/g,'$10').replace(/(\d)[lI|](?=\d)/g,'$11');
+    const re=/(\d{1,2})\s*[\/\-.,]?\s*(\d{1,2})\s*[\/\-.,]?\s*(20\d{2})/g;
+    let m;
+    while((m=re.exec(x))){
+        const d=+m[1],mo=+m[2];
+        if(d>=1&&d<=31&&mo>=1&&mo<=12)return m[3]+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    }
+    return '';
+}
+
 function findExact(name){
     const k=normName(name);
     return k?(D.suppliers.find(s=>normName(s)===k)||null):null;
@@ -1638,6 +1649,20 @@ async function runOcr(file){
             if(!best||r.score>best.score)best=r;
             if(r.good&&r.date)break;
             cur++;
+        }
+        /* date not found: read only the top strip of the photo, enlarged, digits only */
+        if(best&&!best.date){
+            busy('Reading the date…');
+            for(const frac of [0.2,0.3,0.14]){
+                const sw=img.naturalWidth,sh=Math.round(img.naturalHeight*frac),sc=Math.max(1,2400/sw);
+                const c=document.createElement('canvas');
+                c.width=Math.round(sw*sc);c.height=Math.round(sh*sc);
+                c.getContext('2d').drawImage(img,0,0,sw,sh,0,0,c.width,c.height);
+                await worker.setParameters({tessedit_pageseg_mode:'6',tessedit_char_whitelist:'0123456789/-. '});
+                const o=await worker.recognize(c);
+                const d=dateFromText(o.data.text||'');
+                if(d){best.date=d;break;}
+            }
         }
     } finally {
         try{await worker.terminate();}catch(e){}
