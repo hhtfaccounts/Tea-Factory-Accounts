@@ -40,6 +40,7 @@ button.x{background:none;border:0;color:#b33;cursor:pointer;font-size:16px}
 .del:hover{background:#a5301f}
 .sm{padding:6px 12px!important}
 .tw{overflow-x:auto}
+.date-edit{width:150px;min-width:145px;padding:6px 8px}
 table{border-collapse:collapse;width:100%;margin-top:10px}
 th,td{padding:7px 8px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}
 th{color:var(--mu);font-size:12px}
@@ -493,8 +494,9 @@ const T = () => {
 
 const SD = () => D.selDate || T();
 
+// Display dates as DD/MM/YY (example: 02/11/26).
 const dm = d => d && d.length >= 10
-    ? d.slice(8,10)+d.slice(5,7)+d.slice(2,4)
+    ? d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(2,4)
     : (d || '');
 
 let D = defaultData();
@@ -625,6 +627,14 @@ function del(k,i) {
     go(cur);
 }
 
+// Update the date on an existing Green leaf entry and save it to the server.
+function setEntryDate(k,i,value) {
+    if (k !== 'leaf' || !D[k] || !D[k][i] || !value) return;
+    D[k][i].d = value;
+    save();
+    go(cur);
+}
+
 function table(s,rows) {
     rows = rows || D[s.k];
     const idx = D[s.k];
@@ -633,7 +643,12 @@ function table(s,rows) {
     <tr>${s.F.map(x=>`<th>${x[1]}</th>`).join('')}${s.C.map(c=>`<th>${c[0]}</th>`).join('')}<th></th></tr>`+
     rows.slice().reverse().map(r=>{
         const i = idx.indexOf(r);
-        return `<tr>${s.F.map(x=>`<td>${x[2]==='date'?dm(r[x[0]]):(r[x[0]]??'')}</td>`).join('')}${s.C.map(c=>`<td>${c[1](r)}</td>`).join('')}<td><button class="del" onclick="del('${s.k}',${i})">Delete</button></td></tr>`;
+        return `<tr>${s.F.map(x=>{
+            if (x[2] === 'date' && s.k === 'leaf') {
+                return `<td><input class="date-edit" type="date" aria-label="Change green leaf entry date" value="${r[x[0]] || ''}" onchange="setEntryDate('${s.k}',${i},this.value)"></td>`;
+            }
+            return `<td>${x[2]==='date'?dm(r[x[0]]):(r[x[0]]??'')}</td>`;
+        }).join('')}${s.C.map(c=>`<td>${c[1](r)}</td>`).join('')}<td><button class="del" onclick="del('${s.k}',${i})">Delete</button></td></tr>`;
     }).join('')+
     `</table></div>`;
 }
@@ -1916,4 +1931,4 @@ loadFromServer(false);
 
 </script>
 </body>
-</html>
+</html>, make sure that i can change the date of entires uploaded in the green leaf tab, also there no need 021126, want it like 02/11/26
