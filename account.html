@@ -246,6 +246,48 @@ button.p,.del,button.gh,.seg button{position:relative;overflow:hidden}
 .tg.dim{color:var(--mu)}
 button.tg.use{cursor:pointer}
 #impSum{margin:10px 0 12px}
+
+
+/* ===== refined liquid-glass finish ===== */
+:root{
+  --glass:rgba(220,255,232,.075);
+  --glass2:rgba(220,255,232,.115);
+  --bd:rgba(226,255,236,.22);
+  --sh:0 18px 48px rgba(0,8,4,.38);
+}
+body{
+  background:
+    radial-gradient(ellipse at 12% 8%,rgba(86,210,137,.19),transparent 38%),
+    radial-gradient(ellipse at 88% 78%,rgba(66,160,190,.13),transparent 42%),
+    linear-gradient(135deg,#06150f 0%,#0b2a1b 48%,#102b27 100%) fixed;
+}
+.card,.stat{
+  background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.035) 48%,rgba(120,220,160,.045)),rgba(12,34,25,.48);
+  border:1px solid rgba(235,255,242,.23);
+  box-shadow:0 18px 46px rgba(0,0,0,.28),inset 0 1.5px 0 rgba(255,255,255,.34),inset 0 -1px 0 rgba(255,255,255,.045);
+  -webkit-backdrop-filter:blur(30px) saturate(185%);
+  backdrop-filter:blur(30px) saturate(185%);
+}
+.card{position:relative;isolation:isolate;overflow:hidden}
+.card::after{height:1px;opacity:.72}
+.card>h3::before{box-shadow:0 0 16px color-mix(in srgb,var(--tint) 75%,transparent)}
+input,select,textarea{
+  background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.025)),rgba(0,12,7,.25);
+  border-color:rgba(235,255,242,.22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13),inset 0 5px 14px rgba(0,0,0,.16);
+  -webkit-backdrop-filter:blur(16px) saturate(170%);
+  backdrop-filter:blur(16px) saturate(170%);
+}
+nav{
+  background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.035)),rgba(9,30,23,.58);
+  border-color:rgba(235,255,242,.27);
+  box-shadow:0 18px 48px rgba(0,0,0,.4),inset 0 1.5px 0 rgba(255,255,255,.36);
+}
+.leaf-entry-card{border-color:rgba(143,224,160,.3)}
+@media(prefers-reduced-transparency:reduce){
+  .card,.stat,nav,input,select,textarea{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(15,42,28,.96)}
+}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -736,7 +778,9 @@ Home() {
 },
 
 'Green leaf'() {
-    return block('leaf',`<button type="button" class="p" onclick="newSup()">+ Supplier</button>`)+`${supTable()}${dailyTable()}`;
+    // Keep the entry form and supplier controls, but hide the individual
+    // Date / Supplier / Weight / Amount records table from this page.
+    return `<div class="card leaf-entry-card"><h3>${sec.leaf.t}</h3>${form(sec.leaf,`<button type="button" class="p" onclick="newSup()">+ Supplier</button>`)}</div>${supTable()}${dailyTable()}`;
 },
 
 Firewood() {
